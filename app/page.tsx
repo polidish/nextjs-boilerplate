@@ -1,6 +1,14 @@
 "use client";
-import Site from "./site";
 
 export default function Page() {
-return <Site />;
-}
+return (
+<div
+style={{
+minHeight: "100vh",
+backgroundColor: "#BF5700",
+display: "flex",
+flexDirection: "column",
+color: "#fff",
+fontFamily: "Georgia, 'Times New Roman', serif",
+}}
+>
