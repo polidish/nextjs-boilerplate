@@ -1,65 +1,71 @@
-import Image from "next/image";
+<iframe src="https://polidish.tiiny.site" width="100%" height="800" style="border:4px solid #d4af37;" allowfullscreen></iframe>
+notion style embed
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+page 
+
+<!-- TOP: SIGN-UP + JUNGLE INTRO -->
+<div style="background:#000;color:#d4af37;padding:30px 20px;text-align:center;border-bottom:4px solid #d4af37;">
+  <h1 style="margin:0;font-size:2.5em;">Polidish</h1>
+  <p style="font-size:1.3em;font-weight:bold;margin:15px 0;">
+    Welcome to the jungle thread — uncensored viewpoints of verified member accounts posted here.
+  </p>
+  <p style="margin:10px 0;">
+    <strong>By signing up you are confirming you are at least 18 years old, voting age.</strong>
+  </p>
+
+  <form id="signup-form" style="margin:25px auto;max-width:500px;">
+    <input type="email" placeholder="Your email" required style="width:70%;padding:14px;font-size:1.1em;">
+    <button type="submit" style="width:28%;padding:14px;background:#d4af37;color:#000;border:none;font-weight:bold;font-size:1.1em;cursor:pointer;">
+      Join → Magic Link
+    </button>
+  </form>
+  <div id="status" style="margin-top:10px;color:#d4af37;font-weight:bold;"></div>
+</div>
+
+<!-- MAIN LAYOUT: 25% ADS LEFT | 75% THREAD RIGHT -->
+<div style="display:flex;flex-wrap:wrap;max-width:1400px;margin:0 auto;">
+  <!-- LEFT: ADS (25%) -->
+  <div style="flex:1;min-width:250px;background:#111;padding:20px;border-right:3px solid #d4af37;">
+    <h3 style="color:#d4af37;text-align:center;margin-top:0;">Ads</h3>
+    <div style="background:#222;height:90vh;color:#888;text-align:center;padding-top:40vh;">
+      Your ad here<br>→ contact@polidish.com
     </div>
-  );
-}
+  </div>
+
+  <!-- RIGHT: JUNGLE THREAD (75%) -->
+  <div style="flex:3;min-width:300px;background:#000;color:#fff;padding:30px;height:80vh;overflow-y:auto;">
+    <h2 style="color:#d4af37;text-align:center;margin-top:0;">The Jungle Thread</h2>
+    <hr style="border-color:#d4af37;margin:20px 0;">
+    <div id="thread-posts">
+      <p style="text-align:center;color:#888;font-style:italic;">
+        No posts yet — the first verified voice starts the fire.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('signup-form');
+  const status = document.getElementById('status');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = e.target[0].value.trim();
+    status.textContent = 'Sending…';
+    try {
+      const res = await fetch('https://polidish.tiiny.site/api/collections/users/auth-with-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, identity: email })
+      });
+      if (res.ok) {
+        status.innerHTML = 'You’re in! Magic link sent — check inbox + spam.';
+        form.reset();
+      } else {
+        const err = await res.json();
+        status.textContent = err.message || 'Error — try again.';
+      }
+    } catch (err) {
+      status.textContent = 'Network error — refresh';
+    }
+  });
+</script>
