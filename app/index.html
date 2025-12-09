@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polidish</title>
+  <style>
+    body, html { margin: 0; padding: 0; background: #D2691E; color: white; font-family: Arial, Helvetica, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    /* Hero - three main symbolic images */
+    .hero {
+      position: relative;
+      height: 60vh;
+      background: 
+        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url('https://i0.wp.com/www.ahoymatey.blog/wp-content/uploads/2025/01/fine-dining-food-plating.jpg') left / 33.33% 100% no-repeat,
+        url('https://img.freepik.com/premium-photo/closeup-hands-holding-ace-diamonds-woman-table-is-playing-solitaire-board-card-games-home-leisure-activities_259471-422.jpg') center / 33.33% 100% no-repeat,
+        url('https://thumbs.dreamstime.com/b/luxurious-chalet-nestled-snowy-mountain-landscape-experience-serene-beauty-surrounded-snow-covered-mountains-cozy-346468949.jpg') right / 33.33% 100% no-repeat;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #FFD700;
+      background: rgba(0,0,0,0.65);
+      padding: 30px 60px;
+      border-radius: 15px;
+      max-width: 90%;
+    }
+    @media (max-width: 768px) {
+      .hero { height: 50vh; background-size: cover; background-position: center; }
+      .hero h1 { font-size: 1.8rem; padding: 20px 30px; }
+    }
+
+    /* Main content - gold dares left, jungle thread right */
+    .main {
+      flex: 1;
+      max-width: 1300px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 50px;
+    }
+    .ads {
+      flex: 1;
+      color: #d4af37;
+      font-size: 1.6rem;
+      line-height: 2.4;
+    }
+    .ads div { margin-bottom: 50px; }
+    .thread {
+      flex: 2;
+      background: white;
+      color: #222;
+      padding: 40px;
+      border: 4px solid black;
+      border-radius: 12px;
+      min-height: 60vh;
+    }
+    .thread h2 { text-align: center; margin-top: 0; font-size: 2.2rem; font-weight: bold; }
+    .thread p { text-align: center; color: #888; font-style: italic; font-size: 1.2rem; }
+    @media (max-width: 768px) {
+      .main { flex-direction: column; }
+      .ads, .thread { flex: 1; }
+    }
+
+    /* Footer disclaimer */
+    footer {
+      background: #B4520A;
+      padding: 50px 30px;
+      text-align: center;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-top: 30px;
+      color: #EEE;
+      font-size: 0.95rem;
+    }
+    @media (max-width: 768px) {
+      .footer-bottom { flex-direction: column; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <h1>Luxury Advertisement Partners to appeal to the<br>High Worth While individuals HWWI</h1>
+  </section>
+
+  <section class="main">
+    <div class="ads">
+      <div>Stay objective. Stay readable. Stay unpredictable.</div>
+      <div>Think for yourself — we dare you.</div>
+      <div>Uncurated. Unfiltered. Unbothered.</div>
+    </div>
+
+    <div class="thread">
+      <h2>Welcome to the Jungle Thread — Members Only</h2>
+      <p>No posts yet — the first verified voice starts the fire.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>Polidish LLC is not legally responsible for your poor judgement. You endanger children, threaten terrorism or break the law, you reveal yourself. Two-factor Authentication. It's a troll-free freedom fest.</p>
+    <div class="footer-bottom">
+      <div>Copyright 2025<br>All Rights Reserved<br>Polidish LLC</div>
+      <div>...127 Minds<br>Day I</div>
+    </div>
+  </footer>
+</body>
+</html>
