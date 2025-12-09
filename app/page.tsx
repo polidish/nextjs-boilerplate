@@ -1,151 +1,124 @@
-"use client";
-
-export default function Page() {
-return (
-<div style={{ background: "#BF5700", minHeight: "100vh", paddingBottom: "80px" }}>
-
-{/* HEADER */}
-<div style={{ textAlign: "center", padding: "30px 10px" }}>
-<img
-src="/logo.png"
-alt="Polidish"
-style={{ width: "120px", marginBottom: "10px" }}
-/>
-<h1 style={{ fontSize: "3em", fontWeight: "900", margin: "0", fontFamily: "Georgia, serif", color:"#000" }}>
-Polidish — Politely Dishing Politics
-</h1>
-<p style={{ fontSize: "1.5em", fontWeight: "bold", marginTop: "10px", fontFamily: "Georgia, serif", color:"#000" }}>
-May the best mind win.
-</p>
-</div>
-
-{/* SIGN UP BAR */}
-<div
-style={{
-background: "#111",
-color: "#d4af37",
-padding: "15px 20px",
-textAlign: "center",
-marginBottom: "20px"
-}}
->
-<form id="signup-form" style={{ maxWidth: "420px", margin: "0 auto" }}>
-<input
-id="signup-email"
-type="email"
-placeholder="email address"
-required
-style={{
-width: "65%",
-padding: "12px",
-fontSize: "1.1em",
-border: "none"
-}}
-/>
-<button
-type="submit"
-style={{
-width: "30%",
-padding: "12px",
-background: "#d4af37",
-color: "#000",
-fontWeight: "bold",
-cursor: "pointer",
-border: "none"
-}}
->
-Join
-</button>
-</form>
-<div id="status" style={{ marginTop: "8px", fontWeight: "bold" }} />
-</div>
-
-{/* MAIN CONTENT WRAPPER */}
-<div style={{ display: "flex", width: "90%", margin: "0 auto", gap: "20px" }}>
-
-{/* JUNGLE THREAD */}
-<div
-style={{
-flex: "3",
-background: "#fff",
-border: "3px solid #000",
-borderRadius: "8px",
-padding: "20px",
-height: "72vh",
-overflowY: "auto"
-}}
->
-<h2 style={{ textAlign: "center", marginTop: 0, fontFamily:"Georgia, serif", fontWeight:"bold" }}>
-Welcome to the Jungle Thread — Members Only
-</h2>
-<div id="thread-posts" style={{ color: "#222", fontSize: "1.1em" }}>
-<p style={{ textAlign: "center", color: "#888", fontStyle: "italic" }}>
-No posts yet — the first verified voice starts the fire.
-</p>
-</div>
-</div>
-
-{/* ADS — FIXED GOLD TEXT */}
-<div style={{ flex:"1", position:"relative" }}>
-<div style={{ position:"sticky", top:"20px" }}>
-<div style={{ marginBottom:"20px", color:"#d4af37", fontFamily:"Georgia, serif", fontSize:"1.1em" }}>
-Stay objective. Stay readable. Stay unpredictable.
-</div>
-<div style={{ marginBottom:"20px", color:"#d4af37", fontFamily:"Georgia, serif", fontSize:"1.1em" }}>
-Think for yourself — we dare you.
-</div>
-<div style={{ marginBottom:"20px", color:"#d4af37", fontFamily:"Georgia, serif", fontSize:"1.1em" }}>
-Uncurated. Unfiltered. Unbothered.
-</div>
-</div>
-</div>
-</div>
-
-{/* FOOTER */}
-<div
-style={{
-width: "100%",
-textAlign: "center",
-color: "#000",
-fontSize: "0.9em",
-marginTop: "25px",
-fontFamily: "Georgia, serif"
-}}
->
-© Polidish LLC — Transparent public view. Members only — 18+ voting age. Zero censorship.
-</div>
-
-{/* MAGIC LINK SCRIPT */}
-<script
-dangerouslySetInnerHTML={{
-__html: `
-const form = document.getElementById('signup-form');
-const status = document.getElementById('status');
-const emailField = document.getElementById('signup-email');
-
-form.addEventListener('submit', async e => {
-e.preventDefault();
-const email = emailField.value.trim();
-status.textContent = 'Sending…';
-try {
-const res = await fetch('https://polidish.tiiny.site/api/collections/users/auth-with-email', {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ email, identity: email })
-});
-if (res.ok) {
-status.innerHTML = 'Magic link sent — check inbox + spam.';
-emailField.value = '';
-} else {
-status.textContent = 'Error — try again.';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polidish</title>
+<style>
+body, html {
+margin: 0; padding: 0; background: #D2691E; color: white;
+font-family: Arial, Helvetica, sans-serif; min-height: 100vh;
+display: flex; flex-direction: column;
 }
-} catch (err) {
-status.textContent = 'Network error — refresh';
+
+/* Hero - three main symbolic images */
+.hero {
+position: relative;
+height: 60vh;
+background:
+linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+url('https://i0.wp.com/www.ahoymatey.blog/wp-content/uploads/2025/01/fine-dining-food-plating.jpg') left / 33.33% 100% no-repeat,
+url('https://img.freepik.com/premium-photo/closeup-hands-holding-ace-diamonds-woman-table-is-playing-solitaire-board-card-games-home-leisure-activities_259471-422.jpg') center / 33.33% 100% no-repeat,
+url('https://thumbs.dreamstime.com/b/luxurious-chalet-nestled-snowy-mountain-landscape-experience-serene-beauty-surrounded-snow-covered-mountains-cozy-346468949.jpg') right / 33.33% 100% no-repeat;
+background-size: cover;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
 }
-});
-`,
-}}
-/>
+.hero h1 {
+font-size: 3rem;
+font-weight: bold;
+color: #FFD700;
+background: rgba(0,0,0,0.65);
+padding: 30px 60px;
+border-radius: 15px;
+max-width: 90%;
+}
+@media (max-width: 768px) {
+.hero { height: 50vh; background-size: cover; background-position: center; }
+.hero h1 { font-size: 1.8rem; padding: 20px 30px; }
+}
+
+/* Main content - ads left, jungle thread right */
+.main {
+flex: 1;
+max-width: 1300px;
+margin: 40px auto;
+padding: 0 20px;
+display: flex;
+gap: 50px;
+}
+.ads {
+flex: 1;
+color: #d4af37;
+font-size: 1.6rem;
+line-height: 2.4;
+}
+.ads div { margin-bottom: 50px; }
+.thread {
+flex: 2;
+background: white;
+color: #222;
+padding: 40px;
+border: 4px solid black;
+border-radius: 12px;
+min-height: 60vh;
+}
+.thread h2 { text-align: center; margin-top: 0; font-size: 2.2rem; font-weight: bold; }
+.thread p { text-align: center; color: #888; font-style: italic; font-size: 1.2rem; }
+@media (max-width: 768px) {
+.main { flex-direction: column; }
+.ads, .thread { flex: 1; }
+}
+
+/* Footer disclaimer */
+footer {
+background: #B4520A;
+padding: 50px 30px;
+text-align: center;
+line-height: 1.8;
+font-size: 1.1rem;
+}
+.footer-bottom {
+display: flex;
+justify-content: space-between;
+flex-wrap: wrap;
+margin-top: 30px;
+color: #EEE;
+font-size: 0.95rem;
+}
+@media (max-width: 768px) {
+.footer-bottom { flex-direction: column; gap: 20px; }
+}
+</style>
+</head>
+<body>
+<section class="hero">
+<h1>Luxury Advertisement Partners to appeal to the<br>High Worth While individuals HWWI</h1>
+</section>
+
+<section class="main">
+<!-- Left: three gold dares -->
+<div class="ads">
+<div>Stay objective. Stay readable. Stay unpredictable.</div>
+<div>Think for yourself — we dare you.</div>
+<div>Uncurated. Unfiltered. Unbothered.</div>
 </div>
-);
-}
+
+<!-- Right: Jungle Thread -->
+<div class="thread">
+<h2>Welcome to the Jungle Thread — Members Only</h2>
+<p>No posts yet — the first verified voice starts the fire.</p>
+</div>
+</section>
+
+<footer>
+<p>Polidish LLC is not legally responsible for your poor judgement. You endanger children, threaten terrorism or break the law, you reveal yourself. Two-factor Authentication. It's a troll-free freedom fest.</p>
+<div class="footer-bottom">
+<div>Copyright 2025<br>All Rights Reserved<br>Polidish LLC</div>
+<div>...127 Minds<br>Day I</div>
+</div>
+</footer>
+</body>
+</html>
