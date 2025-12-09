@@ -1,4 +1,4 @@
-* RESET / LAYOUT */
+/* RESET / LAYOUT */
 body, html {
 margin: 0;
 padding: 0;
@@ -9,93 +9,5 @@ flex-direction: column;
 background: #D2691E;
 color: white;
 }
-
-/* HERO WITH 3 IMAGES */
-.hero {
-position: relative;
-height: 60vh;
-background:
-linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-url('https://i0.wp.com/www.ahoymatey.blog/wp-content/uploads/2025/01/fine-dining-food-plating.jpg') left / 33% 100% no-repeat,
-url('https://img.freepik.com/premium-photo/closeup-hands-holding-ace-diamonds-woman-table-is-playing-solitaire-board-card-games-home-leisure-activities_259471-422.jpg') center / 33% 100% no-repeat,
-url('https://thumbs.dreamstime.com/b/luxurious-chalet-nestled-snowy-mountain-landscape-experience-serene-beauty-surrounded-snow-covered-mountains-cozy-346468949.jpg') right / 33% 100% no-repeat;
-display: flex;
-align-items: center;
-justify-content: center;
-text-align: center;
-}
-
-.hero h1 {
-font-size: 2.8rem;
-font-weight: bold;
-color: #FFD700;
-background: rgba(0,0,0,0.6);
-padding: 30px 50px;
-border-radius: 15px;
-}
-
-/* MAIN CONTENT: ADS LEFT, JUNGLE RIGHT */
-.main-content {
-flex: 1;
-display: flex;
-max-width: 1200px;
-margin: 40px auto;
-padding: 0 20px;
-gap: 40px;
-}
-
-.ads {
-flex: 1;
-color: #d4af37;
-font-size: 1.5rem;
-line-height: 2.2;
-}
-
-.ads div {
-margin-bottom: 40px;
-}
-
-.jungle-thread {
-flex: 2;
-background: white;
-color: #222;
-padding: 40px;
-border: 4px solid black;
-border-radius: 12px;
-min-height: 60vh;
-overflow-y: auto;
-}
-
-.jungle-thread h2 {
-text-align: center;
-margin-top: 0;
-font-size: 2rem;
-}
-
-/* FOOTER */
-footer {
-background: #B4520A;
-padding: 40px 20px;
-text-align: center;
-line-height: 1.8;
-}
-
-.footer-bottom {
-display: flex;
-justify-content: space-between;
-flex-wrap: wrap;
-margin-top: 30px;
-color: #EEE;
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-.hero { height: 50vh; }
-.hero h1 { font-size: 1.8rem; padding: 20px; }
-.main-content { flex-direction: column; }
-.ads, .jungle-thread { flex: 1; }
-.footer-bottom { flex-direction: column; gap: 20px; }
-}
-
 
 
