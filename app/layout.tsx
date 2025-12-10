@@ -1,22 +1,11 @@
-import './globals.css'
-import { Playfair_Display } from 'next/font/google'
+import "./globals.css";
+import type { ReactNode } from "react";
+import { playfair } from "./fonts";
 
-const playfair = Playfair_Display({
-subsets: ['latin'],
-weight: ['400', '500', '600', '700']
-})
-
-export const metadata = {
-title: 'Polidish',
-description: 'Polidish: Site rebuilding underway — returning shortly.'
-}
-
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
 return (
 <html lang="en">
-<body className={playfair.className}>
-{children}
-</body>
+<body className={playfair.className}>{children}</body>
 </html>
-)
+);
 }
