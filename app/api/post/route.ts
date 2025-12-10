@@ -1,30 +1,17 @@
-// app/api/post/route.ts
 import { NextResponse } from 'next/server'
-import { supabase } from '../../../lib/supabaseClient'
+import { supabase } from '@/lib/supabaseClient'
 
-export async function POST(req: Request) {
+export async function GET() {
 try {
-const { email, content } = await req.json()
-
-if (!email || !content) {
-return NextResponse.json(
-{ error: 'Email and content are required' },
-{ status: 400 }
-)
-}
-
-const { error } = await supabase.from('signups').insert([
-{
-email,
-content,
-},
-])
+const { data, error } = await supabase
+.from('posts')
+.select('*')
 
 if (error) {
-return NextResponse.json({ error: error.message }, { status: 400 })
+return NextResponse.json({ error: error.message }, { status: 500 })
 }
 
-return NextResponse.json({ success: true })
+return NextResponse.json({ posts: data })
 } catch (err: any) {
 return NextResponse.json({ error: err.message }, { status: 500 })
 }
