@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/app/lib/supabaseClient'
+import { supabase } from '../../lib/supabaseClient'
 
 export async function GET() {
 try {
@@ -8,7 +8,7 @@ const { data, error } = await supabase
 .select('*')
 
 if (error) {
-return NextResponse.json({ error: error.message }, { status: 500 })
+return NextResponse.json({ error: error.message }, { status: 400 })
 }
 
 return NextResponse.json({ posts: data || [] })
