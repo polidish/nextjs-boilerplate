@@ -1,10 +1,20 @@
 import "./globals.css";
-import type { ReactNode } from "react";
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export const metadata = {
+title: "Polidish",
+description: "Freedom is deliberate.",
+};
+
+export default function RootLayout({
+children,
+}: {
+children: React.ReactNode;
+}) {
 return (
 <html lang="en">
-<body>{children}</body>
+<body className="bg-[#E5A55A] text-black antialiased">
+{children}
+</body>
 </html>
 );
 }
