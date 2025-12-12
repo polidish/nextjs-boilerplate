@@ -1,66 +1,88 @@
-export default function Home() {
+export default function Page() {
 return (
-<>
 <main
 style={{
-display: 'flex',
-flexDirection: 'column',
-minHeight: '100vh',
+minHeight: "100vh",
+display: "flex",
+flexDirection: "column",
+backgroundColor: "#BF5700", // burnt orange field (explicit, locked)
 }}
 >
-<header style={{ height: 60 }}>
-{/* logo here */}
+{/* HEADER */}
+<header
+style={{
+padding: "16px 24px",
+fontSize: "20px",
+fontWeight: 600,
+}}
+>
+POLIDISH
 </header>
 
-<section style={{ display: 'flex', flex: 1 }}>
-{/* Outpost */}
+{/* MAIN TWO-COLUMN LAYOUT */}
+<section
+style={{
+display: "flex",
+flex: 1,
+gap: "24px",
+padding: "24px",
+}}
+>
+{/* OUTPOST (LEFT COLUMN) */}
 <aside
 style={{
-width: '25%',
-padding: 16,
-display: 'flex',
-flexDirection: 'column',
-gap: 12,
+width: "28%",
+display: "flex",
+flexDirection: "column",
+gap: "16px",
 }}
 >
-<div style={{ border: '2px solid black', padding: 12 }}>
-Ad Box 1
-</div>
-<div style={{ border: '2px solid black', padding: 12 }}>
-Ad Box 2
-</div>
-<div style={{ border: '2px solid black', padding: 12 }}>
-Ad Box 3
-</div>
+<div style={adBoxStyle}>Outpost Box 1</div>
+<div style={adBoxStyle}>Outpost Box 2</div>
+<div style={adBoxStyle}>Outpost Box 3</div>
 
-<button>Sign Up</button>
-<button>Log In</button>
+<button style={buttonStyle}>Sign Up</button>
+<button style={buttonStyle}>Log In</button>
 </aside>
 
-{/* Jungle */}
-<section style={{ width: '75%', padding: 16 }}>
-<div
+{/* JUNGLE THREAD (RIGHT COLUMN) */}
+<section
 style={{
-background: 'white',
-minHeight: '100%',
-padding: 16,
+width: "72%",
+backgroundColor: "#FFFFFF", // jungle canvas only
+padding: "24px",
+overflowY: "auto",
 }}
 >
-Jungle Thread Content
-</div>
+<p>Jungle Thread placeholder content.</p>
+<p>Text-first. Content lives here.</p>
 </section>
 </section>
 
+{/* FOOTER */}
 <footer
 style={{
-width: '100%',
-padding: '8px 16px',
-fontSize: 12,
+padding: "8px 24px",
+fontSize: "12px",
+textAlign: "center",
 }}
 >
-Footer content runs full width
+© Polidish
 </footer>
 </main>
-</>
 );
 }
+
+/* --- local styles (explicit, no defaults) --- */
+
+const adBoxStyle: React.CSSProperties = {
+border: "2px solid #000000",
+padding: "12px",
+backgroundColor: "transparent",
+};
+
+const buttonStyle: React.CSSProperties = {
+padding: "10px",
+fontSize: "14px",
+cursor: "pointer",
+};
