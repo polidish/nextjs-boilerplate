@@ -1,5 +1,5 @@
 export default function Page() {
-return (
+return(
 <>
 <header style={{
 textAlign: "center",
