@@ -1,103 +1,31 @@
-export default function Page() {
-return(
-<>
-<header style={{
-textAlign: "center",
-padding: "20px",
-borderBottom: "3px solid #d4af37",
-background: "#000",
-color: "#eaeaea"
-}}>
-<h1>Polidish</h1>
-<p>Public discourse. Verified contributors.</p>
+export default function Home() {
+return (
+<main className="page">
+<header className="header">
+{/* logo goes here */}
 </header>
 
-<main style={{
-display: "flex",
-maxWidth: "1400px",
-margin: "0 auto",
-minHeight: "80vh",
-background: "#000",
-color: "#eaeaea"
-}}>
-{/* LEFT COLUMN */}
-<div style={{
-width: "30%",
-padding: "20px",
-borderRight: "3px solid #d4af37",
-boxSizing: "border-box"
-}}>
-<div style={{ border: "1px solid #555", height: "140px", marginBottom: "20px", display: "flex", alignItems: "center", justifyContent: "center", color: "#888" }}>
-Advertisement
-</div>
-<div style={{ border: "1px solid #555", height: "140px", marginBottom: "20px", display: "flex", alignItems: "center", justifyContent: "center", color: "#888" }}>
-Advertisement
-</div>
-<div style={{ border: "1px solid #555", height: "140px", marginBottom: "20px", display: "flex", alignItems: "center", justifyContent: "center", color: "#888" }}>
-Advertisement
-</div>
+<section className="content">
+<aside className="outpost">
+<div className="ad-box">Ad Box 1</div>
+<div className="ad-box">Ad Box 2</div>
+<div className="ad-box">Ad Box 3</div>
 
-<button style={{
-width: "100%",
-padding: "12px",
-marginTop: "10px",
-background: "#d4af37",
-color: "#000",
-border: "none",
-fontWeight: "bold",
-cursor: "pointer"
-}}>
-Join
-</button>
+<button>Sign Up</button>
+<button>Log In</button>
+</aside>
 
-<button style={{
-width: "100%",
-padding: "12px",
-marginTop: "10px",
-background: "#d4af37",
-color: "#000",
-border: "none",
-fontWeight: "bold",
-cursor: "pointer"
-}}>
-About
-</button>
+<section className="jungle">
+<div className="jungle-thread">
+Jungle Thread Content
 </div>
+</section>
+</section>
 
-{/* RIGHT COLUMN */}
-<div style={{
-width: "70%",
-padding: "20px",
-display: "flex",
-alignItems: "center",
-justifyContent: "center",
-boxSizing: "border-box"
-}}>
-<div style={{
-width: "100%",
-height: "500px",
-border: "4px solid #d4af37",
-display: "flex",
-alignItems: "center",
-justifyContent: "center",
-color: "#aaa",
-fontStyle: "italic"
-}}>
-Jungle loading…
-</div>
-</div>
-</main>
-
-<footer style={{
-textAlign: "center",
-padding: "20px",
-borderTop: "3px solid #d4af37",
-background: "#000",
-color: "#aaa",
-fontSize: "0.9em"
-}}>
-© Polidish — A venue, not a platform
+<footer className="footer">
+Footer content runs full width
 </footer>
-</>
+</main>
 );
 }
+
