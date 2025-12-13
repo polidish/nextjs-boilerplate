@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 
 export default function Home() {
@@ -58,23 +60,32 @@ export default function Home() {
           <h2 className="text-5xl font-black text-yellow-300 underline decoration-yellow-300 mb-6">
             POLIDISH.STORE COMING SOON FOR
           </h2>
-          <p className="text-3xl text-yellow-300">ORIGINAL POLIDISH BRAND MERCH</p>
+          <p className="text-3xl text-yellow-300">
+            ORIGINAL POLIDISH BRAND MERCH
+          </p>
         </div>
         <div className="bg-black p-16 text-center rounded-2xl">
           <h2 className="text-5xl font-black text-yellow-300 underline decoration-yellow-300 mb-6">
             POLIDISH.BLOG COMING SOON IN
           </h2>
-          <p className="text-3xl text-yellow-300">2026-MEMBERS EXTENDED DISH</p>
+          <p className="text-3xl text-yellow-300">
+            2026-MEMBERS EXTENDED DISH
+          </p>
         </div>
       </div>
 
       {/* Footer */}
       <footer className="bg-[#B4520A] py-16 text-center text-lg">
         Polidish LLC is not legally responsible for your poor judgement. If you endanger children, threaten terrorism or break the law, you reveal yourself. Two-factor Authentication. It's a troll-free freedom fest.
-        <br /><br />
-        <span className="text-4xl font-bold text-yellow-300">...127 Minds Day I</span>
         <br />
-        <span className="text-sm text-gray-300">Copyright 2025 Polidish LLC. All rights reserved.</span>
+        <br />
+        <span className="text-4xl font-bold text-yellow-300">
+          ...127 Minds Day I
+        </span>
+        <br />
+        <span className="text-sm text-gray-300">
+          Copyright 2025 Polidish LLC. All rights reserved.
+        </span>
       </footer>
     </div>
   );
