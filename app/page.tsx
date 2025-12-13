@@ -1,211 +1,144 @@
 export default function Page() {
 return (
-<main style={{ background: "#c56b2c", minHeight: "100vh" }}>
-{/* TOP STRAP */}
-<div
-style={{
-background: "#ffffff",
-color: "#c56b2c",
-textAlign: "center",
-fontSize: "22px",
-fontStyle: "italic",
-padding: "12px 0",
-}}
->
+<main style={{ background: '#c86b28', minHeight: '100vh' }}>
+
+{/* TOP STRAPLINE */}
+<header style={{
+background: '#c86b28',
+color: '#111',
+textAlign: 'center',
+padding: '12px 0',
+fontStyle: 'italic'
+}}>
 Politely dish politics. May the best mind win.
-</div>
+</header>
 
-{/* HEADER */}
-<div
-style={{
-display: "flex",
-justifyContent: "space-between",
-padding: "24px",
-color: "#111",
-fontWeight: 600,
-fontSize: "20px",
-}}
->
-<div>YOU ARE CORDIALLY INVITED TO THE POLIDISH VENUE</div>
-<div>FREEDOM IS DELIBERATE</div>
-</div>
+{/* HERO ROW */}
+<section style={{
+display: 'grid',
+gridTemplateColumns: '320px 1fr',
+gap: '24px',
+padding: '24px'
+}}>
 
-{/* MAIN GRID */}
-<section
-style={{
-display: "grid",
-gridTemplateColumns: "360px 1fr",
-gap: "24px",
-padding: "24px",
-}}
->
-{/* LEFT COLUMN – OUTPOST */}
-<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-{/* PIER */}
-<div style={{ position: "relative" }}>
-<img
-src="/pier.jpg"
-style={{ width: "100%", display: "block" }}
-/>
-<div
-style={{
-position: "absolute",
-bottom: "12px",
-left: "12px",
-right: "12px",
-color: "#f2c14e",
-fontStyle: "italic",
-fontSize: "16px",
-}}
->
+{/* LEFT COLUMN — OUTPOST */}
+<aside style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+{/* IMAGE 1 */}
+<div style={{ position: 'relative' }}>
+<img src="/pier.jpg" style={{ width: '100%' }} />
+<div style={overlayStyle}>
 Visualize your ad right here, to the left, or in the center.
 </div>
 </div>
 
-{/* DECANTER */}
-<div style={{ position: "relative" }}>
-<img
-src="/decanter.jpg"
-style={{ width: "100%", display: "block" }}
-/>
-<div
-style={{
-position: "absolute",
-bottom: "12px",
-left: "12px",
-right: "12px",
-color: "#f2c14e",
-fontStyle: "italic",
-fontSize: "16px",
-}}
->
+{/* IMAGE 2 */}
+<div style={{ position: 'relative' }}>
+<img src="/decanter.jpg" style={{ width: '100%' }} />
+<div style={overlayStyle}>
 Advertisements are absolutely uncurated for your privacy.
 </div>
 </div>
 
-{/* PEACOCK */}
-<div style={{ position: "relative" }}>
-<img
-src="/peacock.jpg"
-style={{ width: "100%", display: "block" }}
-/>
-<div
-style={{
-position: "absolute",
-bottom: "12px",
-left: "12px",
-right: "12px",
-color: "#f2c14e",
-fontStyle: "italic",
-fontSize: "16px",
-}}
->
-Polidish: the Outpost where luxury partners meet High Worthwhile
-Individuals (HWWI).
+{/* IMAGE 3 */}
+<div style={{ position: 'relative' }}>
+<img src="/peacock.jpg" style={{ width: '100%' }} />
+<div style={overlayStyle}>
+Polidish: The Outpost where luxury partners meet High Worthwhile Individuals (HWWI).
 </div>
 </div>
 
-{/* BLACK CALLOUTS */}
-<div
-style={{
-background: "#000",
-color: "#f2c14e",
-padding: "14px",
-textAlign: "center",
-fontWeight: 600,
-}}
->
-POLIDISH.STORE COMING SOON FOR
-<br />
-ORIGINAL POLIDISH BRAND MERCH
+{/* BLACK PROMO BOXES */}
+<div style={blackBox}>
+POLIDISH.STORE COMING SOON FOR<br />ORIGINAL POLIDISH BRAND MERCH
 </div>
 
-<div
-style={{
-background: "#000",
-color: "#f2c14e",
-padding: "14px",
-textAlign: "center",
-fontWeight: 600,
-}}
->
-POLIDISH.BLOG COMING SOON IN
-<br />
-2026 – MEMBERS EXTENDED DISH
+<div style={blackBox}>
+POLIDISH.BLOG COMING SOON IN<br />2026 — MEMBERS EXTENDED DISH
 </div>
-</div>
+
+</aside>
 
 {/* RIGHT COLUMN */}
-<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-{/* MEMBERS SIGN UP */}
-<div
-style={{
-background: "#000",
-padding: "24px",
-color: "#fff",
-}}
->
-<h2 style={{ marginBottom: "8px" }}>Polidish</h2>
-<div style={{ fontSize: "14px", marginBottom: "12px" }}>
-Transparent. Public view. Members-only posting.
-<br />
-18+ · Freedom of speech · No censorship
-</div>
-<div style={{ display: "flex", gap: "8px" }}>
+<section>
+
+{/* SIGNUP BAR */}
+<div style={{
+background: '#000',
+padding: '24px',
+color: '#fff'
+}}>
+<h2>Polidish</h2>
+<p>Transparent. Public view. Members-only posting.<br />18+ · Freedom of speech · No censorship</p>
+
+<div style={{ display: 'flex', marginTop: '12px' }}>
 <input
 placeholder="your@email.com"
-style={{
-flex: 1,
-padding: "10px",
-borderRadius: "4px",
-border: "1px solid #555",
-}}
+style={{ flex: 1, padding: '8px' }}
 />
-<button
-style={{
-padding: "10px 18px",
-background: "#f2c14e",
-border: "none",
-fontWeight: 600,
-}}
->
+<button style={{
+background: '#e3b341',
+border: 'none',
+padding: '8px 16px'
+}}>
 Join
 </button>
 </div>
 </div>
 
 {/* JUNGLE THREAD */}
-<div
-style={{
-background: "#ffffff",
-border: "1px solid #aaa",
-padding: "24px",
-minHeight: "360px",
-color: "#111",
-}}
->
-<div style={{ fontStyle: "italic", color: "#777" }}>
+<div style={{
+background: '#fff',
+marginTop: '16px',
+minHeight: '360px',
+padding: '16px'
+}}>
 Jungle loading…
 </div>
-</div>
-</div>
+
+</section>
 </section>
 
 {/* FOOTER */}
-<footer
-style={{
-padding: "24px",
-fontSize: "12px",
-color: "#111",
-}}
->
-<div>© 2025 Polidish LLC · Day 1 · 127 Minds</div>
-<div style={{ marginTop: "8px" }}>
-Polidish LLC is not legally responsible for your poor judgment. If you
-endanger children, threaten terrorism, or break the law, you reveal
-yourself. *Two-factor authentication. It’s a troll-free freedom fest.
+<footer style={{
+display: 'grid',
+gridTemplateColumns: '1fr 1fr 1fr',
+padding: '16px',
+fontSize: '12px'
+}}>
+
+<div style={{ textAlign: 'left' }}>
+Polidish LLC · All rights reserved
 </div>
+
+<div style={{ textAlign: 'center' }}>
+Polidish LLC is not legally responsible for your poor judgment. If you endanger children, threaten terrorism, or break the law, you reveal yourself. Two-factor authentication. It’s a troll-free freedom fest.
+</div>
+
+<div style={{ textAlign: 'right', fontWeight: 'bold' }}>
+127 Minds · Day One
+</div>
+
 </footer>
+
 </main>
 );
 }
+
+const overlayStyle = {
+position: 'absolute' as const,
+bottom: '12px',
+left: '12px',
+right: '12px',
+color: '#e3b341',
+fontStyle: 'italic',
+fontSize: '14px'
+};
+
+const blackBox = {
+background: '#000',
+color: '#e3b341',
+padding: '12px',
+textAlign: 'center' as const,
+fontWeight: 'bold'
+};
