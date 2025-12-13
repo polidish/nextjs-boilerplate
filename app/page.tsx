@@ -1,134 +1,179 @@
 export default function Page() {
 return (
-<main style={{ background: "#111", minHeight: "100vh" }}>
+<main style={{ background: "#c46f2d", minHeight: "100vh", fontFamily: "serif" }}>
 
 {/* TOP BANNER */}
-<div
-style={{
-background: "#ffffff",
-color: "#b45a1b",
-padding: "20px",
+<div style={{
+background: "white",
+color: "#c46f2d",
 textAlign: "center",
-fontSize: "28px",
 fontStyle: "italic",
-fontWeight: 500,
-letterSpacing: "0.5px",
-}}
->
-Politely dishing politics. May the best mind win.
+fontSize: "22px",
+padding: "10px 0",
+borderBottom: "2px solid #000"
+}}>
+Politely dish politics. May the best mind win.
 </div>
 
-{/* HERO */}
-<section
-style={{
+{/* HERO HEADER */}
+<div style={{
+display: "flex",
+justifyContent: "space-between",
+padding: "20px",
+fontSize: "22px",
+fontWeight: "bold"
+}}>
+<div>YOU ARE CORDIALLY INVITED TO THE POLIDISH VENUE</div>
+<div>FREEDOM IS DELIBERATE</div>
+</div>
+
+{/* MAIN GRID */}
+<section style={{
 display: "grid",
-gridTemplateColumns: "1fr 2fr",
-gap: "24px",
-padding: "32px",
-}}
->
+gridTemplateColumns: "320px 1fr",
+gap: "30px",
+padding: "20px"
+}}>
 
-{/* LEFT COLUMN — PHOTOS */}
-<div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+{/* LEFT COLUMN – OUTPOST */}
+<aside style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
 
-{[
-{ src: "/pier.jpg", text: "Picture your ad here" },
-{ src: "/decanter.jpg", text: "Decanter" },
-{ src: "/peacock.jpg", text: "Peacock" },
-].map((item) => (
-<div
-key={item.src}
+{/* PIER */}
+<div style={{ position: "relative" }}>
+<img src="/pier.jpg" style={{ width: "100%", display: "block" }} />
+<div style={{
+position: "absolute",
+bottom: "15px",
+left: "10px",
+right: "10px",
+color: "gold",
+fontStyle: "italic",
+textAlign: "center"
+}}>
+Visualize your ad right here, to the left, or in the center.
+</div>
+</div>
+
+{/* DECANTER */}
+<div style={{ position: "relative" }}>
+<img src="/decanter.jpg" style={{ width: "100%", display: "block" }} />
+<div style={{
+position: "absolute",
+bottom: "15px",
+left: "10px",
+right: "10px",
+color: "gold",
+fontStyle: "italic",
+textAlign: "center"
+}}>
+Advertisements are absolutely uncurated for your privacy.
+</div>
+</div>
+
+{/* PEACOCK */}
+<div style={{ position: "relative" }}>
+<img src="/peacock.jpg" style={{ width: "100%", display: "block" }} />
+<div style={{
+position: "absolute",
+bottom: "15px",
+left: "10px",
+right: "10px",
+color: "gold",
+fontStyle: "italic",
+textAlign: "center"
+}}>
+Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).
+</div>
+</div>
+
+{/* STORE */}
+<div style={{
+background: "black",
+color: "gold",
+padding: "15px",
+textAlign: "center",
+fontWeight: "bold"
+}}>
+POLIDISH.STORE COMING SOON FOR<br />
+ORIGINAL POLIDISH BRAND MERCH
+</div>
+
+{/* BLOG */}
+<div style={{
+background: "black",
+color: "gold",
+padding: "15px",
+textAlign: "center",
+fontWeight: "bold"
+}}>
+POLIDISH.BLOG COMING SOON IN<br />
+2026 — MEMBERS EXTENDED DISH
+</div>
+
+</aside>
+
+{/* RIGHT COLUMN */}
+<section style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+
+{/* MEMBER SIGN-UP */}
+<div style={{
+background: "black",
+color: "white",
+padding: "25px"
+}}>
+<h2 style={{ marginBottom: "5px" }}>Polidish</h2>
+<p style={{ fontSize: "14px", opacity: 0.85 }}>
+Transparent. Public view. Members-only posting.<br />
+18+ · Freedom of speech · No censorship
+</p>
+<div style={{ display: "flex", marginTop: "10px" }}>
+<input
+placeholder="your@email.com"
 style={{
-position: "relative",
-border: "4px solid #000",
-}}
->
-<img
-src={item.src}
-alt=""
-style={{
-width: "100%",
-height: "220px",
-objectFit: "cover",
-display: "block",
+flex: 1,
+padding: "10px",
+border: "1px solid gold",
+background: "black",
+color: "white"
 }}
 />
-
-{/* GOLD OVERLAY TEXT */}
-<div
-style={{
-position: "absolute",
-bottom: "12px",
-left: "12px",
-color: "#f0c27a",
-fontSize: "20px",
-fontWeight: 600,
-textShadow: "0 1px 3px rgba(0,0,0,.8)",
-}}
->
-{item.text}
+<button style={{
+padding: "10px 20px",
+background: "gold",
+border: "none",
+fontWeight: "bold"
+}}>
+Join
+</button>
 </div>
-</div>
-))}
-</div>
-
-{/* RIGHT COLUMN — JUNGLE THREAD */}
-<div
-style={{
-background: "#ffffff",
-padding: "32px",
-display: "flex",
-flexDirection: "column",
-justifyContent: "flex-start",
-}}
->
-{/* MEMBERS BOX */}
-<div
-style={{
-alignSelf: "flex-end",
-border: "2px solid #b45a1b",
-padding: "12px 20px",
-marginBottom: "24px",
-fontWeight: 600,
-color: "#b45a1b",
-}}
->
-Members Sign Up · 18+
 </div>
 
 {/* JUNGLE THREAD */}
-<div
-style={{
-color: "#000",
-fontSize: "18px",
-lineHeight: 1.6,
-flexGrow: 1,
-}}
->
-<strong>Jungle Thread</strong>
-<p>
-This is a public reading space. Members-only posting.
-No referees. No moderation. Ideas stand on their own merit.
-</p>
-<p>
-The jungle is open.
-</p>
+<div style={{
+background: "white",
+minHeight: "420px",
+border: "2px solid #000",
+padding: "15px",
+color: "#000"
+}}>
+Jungle loading…
 </div>
-</div>
+
+</section>
 </section>
 
 {/* FOOTER */}
-<footer
-style={{
-color: "#999",
-fontSize: "14px",
-textAlign: "center",
-padding: "24px",
-}}
->
-© Polidish LLC · All rights reserved · Legal disclaimer · Count
+<footer style={{
+fontSize: "12px",
+padding: "20px",
+color: "#000"
+}}>
+© 2025 Polidish LLC · Day 1 · 127 Minds<br /><br />
+Polidish LLC is not legally responsible for your poor judgement.
+If you endanger children, threaten terrorism, or break the law, you reveal yourself.
+*Two-factor Authentication. It's a troll-free freedom fest.
 </footer>
 
 </main>
-)
+);
 }
