@@ -1,92 +1,77 @@
-"use client";
+export default function Page() {
+return (
+<main style={{ background: '#8b3a1a', minHeight: '100vh', color: '#111' }}>
 
-import Image from "next/image";
+{/* TOP BANNER */}
+<div style={{
+background: '#fff',
+color: '#c45a1a',
+textAlign: 'center',
+padding: '12px 20px',
+fontStyle: 'italic',
+fontWeight: 500,
+borderBottom: '4px solid #000'
+}}>
+Politely dishing politics. <em>May the best mind win.</em>
+</div>
 
-export default function Home() {
-  return (
-    <div className="bg-[#D2691E] text-white min-h-screen">
-      {/* pier.jpeg */}
-      <div className="relative">
-        <Image
-          src="/pier.jpeg"
-          alt="Pier"
-          width={1920}
-          height={1080}
-          className="w-full object-cover"
-          priority
-        />
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-center">
-          <p className="bg-black/60 px-8 py-4 rounded text-2xl md:text-4xl font-bold text-yellow-300">
-            Visualize your ad right here, to the left, or in the center.
-          </p>
-        </div>
-      </div>
+{/* HERO */}
+<section style={{
+padding: '40px 20px 30px',
+textAlign: 'center',
+background: '#f5f1ea',
+borderBottom: '6px solid #000'
+}}>
+<h1 style={{ fontSize: '40px', margin: '0 0 10px' }}>
+Play fair.
+</h1>
+<p style={{ fontSize: '20px', margin: '0 0 14px' }}>
+You’re cordially invited to the political venue.
+</p>
+<p style={{ fontWeight: 'bold', letterSpacing: '0.5px' }}>
+Freedom is deliberate.
+</p>
+</section>
 
-      {/* decanter.jpeg */}
-      <div className="relative -mt-px">
-        <Image
-          src="/decanter.jpeg"
-          alt="Decanter"
-          width={1920}
-          height={1080}
-          className="w-full object-cover"
-        />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <p className="bg-black/50 px-10 py-6 rounded text-4xl md:text-6xl font-bold text-yellow-300 text-center leading-tight">
-            Advertisements are<br />absolutely uncurated<br />for your privacy
-          </p>
-        </div>
-      </div>
+{/* MAIN BODY */}
+<section style={{
+display: 'grid',
+gridTemplateColumns: '1fr 2fr',
+gap: '20px',
+padding: '30px',
+maxWidth: '1400px',
+margin: '0 auto'
+}}>
 
-      {/* peacock.jpeg */}
-      <div className="relative -mt-px">
-        <Image
-          src="/peacock.jpeg"
-          alt="Peacock"
-          width={1920}
-          height={1080}
-          className="w-full object-cover"
-        />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <p className="bg-black/60 px-10 py-6 rounded text-4xl md:text-5xl font-bold text-yellow-300 text-center leading-tight">
-            Polidish: the Outpost where luxury partners<br />meet High Worth While Individuals (HWWI).
-          </p>
-        </div>
-      </div>
+{/* LEFT COLUMN (1/3) */}
+<aside style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-      {/* Black portals */}
-      <div className="max-w-5xl mx-auto px-8 py-20 grid md:grid-cols-2 gap-16">
-        <div className="bg-black p-16 text-center rounded-2xl">
-          <h2 className="text-5xl font-black text-yellow-300 underline decoration-yellow-300 mb-6">
-            POLIDISH.STORE COMING SOON FOR
-          </h2>
-          <p className="text-3xl text-yellow-300">
-            ORIGINAL POLIDISH BRAND MERCH
-          </p>
-        </div>
-        <div className="bg-black p-16 text-center rounded-2xl">
-          <h2 className="text-5xl font-black text-yellow-300 underline decoration-yellow-300 mb-6">
-            POLIDISH.BLOG COMING SOON IN
-          </h2>
-          <p className="text-3xl text-yellow-300">
-            2026-MEMBERS EXTENDED DISH
-          </p>
-        </div>
-      </div>
+{['Canter', 'Peacock', 'Blog', 'Store'].map(label => (
+<div key={label} style={{
+background: '#000',
+color: '#f5c96a',
+padding: '20px',
+border: '3px solid #f5c96a',
+textAlign: 'center',
+fontWeight: 'bold'
+}}>
+{label}
+</div>
+))}
 
-      {/* Footer */}
-      <footer className="bg-[#B4520A] py-16 text-center text-lg">
-        Polidish LLC is not legally responsible for your poor judgement. If you endanger children, threaten terrorism or break the law, you reveal yourself. Two-factor Authentication. It's a troll-free freedom fest.
-        <br />
-        <br />
-        <span className="text-4xl font-bold text-yellow-300">
-          ...127 Minds Day I
-        </span>
-        <br />
-        <span className="text-sm text-gray-300">
-          Copyright 2025 Polidish LLC. All rights reserved.
-        </span>
-      </footer>
-    </div>
-  );
-}
+<div style={{
+background: '#000',
+color: '#ccc',
+padding: '20px',
+border: '3px solid #444',
+textAlign: 'center'
+}}>
+Advertisement
+</div>
+
+</aside>
+
+{/* RIGHT COLUMN (2/3) */}
+<div style={{
+background: '#000',
+border: '4
