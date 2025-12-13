@@ -1,4 +1,4 @@
-// app/page.tsx ← FINAL – pier → decanter → peacock
+"use client";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -124,4 +124,3 @@ posts.map((p) => (
 </div>
 );
 }
-
