@@ -1,114 +1,134 @@
-export default function Home() {
+export default function Page() {
 return (
-<main style={{ background: '#1a0f0a', minHeight: '100vh' }}>
+<main style={{ background: "#111", minHeight: "100vh" }}>
 
 {/* TOP BANNER */}
 <div
 style={{
-background: '#ffffff',
-color: '#b45a1c', // burnt orange (tanner)
-padding: '20px 40px',
-fontSize: '28px',
-fontStyle: 'italic',
-display: 'flex',
-justifyContent: 'space-between',
-alignItems: 'center',
-borderBottom: '4px solid #000'
+background: "#ffffff",
+color: "#b45a1b",
+padding: "20px",
+textAlign: "center",
+fontSize: "28px",
+fontStyle: "italic",
+fontWeight: 500,
+letterSpacing: "0.5px",
 }}
 >
-<div>
-Politely dishing politics. <strong>May the best mind win.</strong>
-</div>
-
-<button
-style={{
-background: '#ffffff',
-color: '#000',
-border: '2px solid #000',
-padding: '10px 18px',
-fontSize: '16px',
-cursor: 'pointer'
-}}
->
-Members Sign-Up · 18+
-</button>
+Politely dishing politics. May the best mind win.
 </div>
 
 {/* HERO */}
 <section
 style={{
-display: 'grid',
-gridTemplateColumns: '1fr 2fr',
-gap: '30px',
-padding: '40px',
-maxWidth: '1400px',
-margin: '0 auto'
+display: "grid",
+gridTemplateColumns: "1fr 2fr",
+gap: "24px",
+padding: "32px",
 }}
 >
 
-{/* LEFT COLUMN — OUTPOST */}
-<div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+{/* LEFT COLUMN — PHOTOS */}
+<div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 
-{/* PIER */}
-<div style={photoBox('/pier.jpg')}>
-<span style={overlayText}>Picture Your Ad</span>
+{[
+{ src: "/pier.jpg", text: "Picture your ad here" },
+{ src: "/decanter.jpg", text: "Decanter" },
+{ src: "/peacock.jpg", text: "Peacock" },
+].map((item) => (
+<div
+key={item.src}
+style={{
+position: "relative",
+border: "4px solid #000",
+}}
+>
+<img
+src={item.src}
+alt=""
+style={{
+width: "100%",
+height: "220px",
+objectFit: "cover",
+display: "block",
+}}
+/>
+
+{/* GOLD OVERLAY TEXT */}
+<div
+style={{
+position: "absolute",
+bottom: "12px",
+left: "12px",
+color: "#f0c27a",
+fontSize: "20px",
+fontWeight: 600,
+textShadow: "0 1px 3px rgba(0,0,0,.8)",
+}}
+>
+{item.text}
 </div>
-
-{/* DECANTER */}
-<div style={photoBox('/decanter.jpg')}>
-<span style={overlayText}>Decanter</span>
 </div>
-
-{/* PEACOCK */}
-<div style={photoBox('/peacock.jpg')}>
-<span style={overlayText}>Peacock</span>
-</div>
-
+))}
 </div>
 
 {/* RIGHT COLUMN — JUNGLE THREAD */}
 <div
 style={{
-background: '#ffffff',
-color: '#000',
-padding: '30px',
-minHeight: '600px',
-border: '4px solid #000'
+background: "#ffffff",
+padding: "32px",
+display: "flex",
+flexDirection: "column",
+justifyContent: "flex-start",
 }}
 >
-<h2 style={{ marginTop: 0 }}>Polidish</h2>
-<p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-Welcome to the Jungle Thread.
-</p>
-<p style={{ fontSize: '16px', color: '#333' }}>
-This is a public reading venue.
-Members post. Minds compete.
-No moderation. No referees.
-</p>
+{/* MEMBERS BOX */}
+<div
+style={{
+alignSelf: "flex-end",
+border: "2px solid #b45a1b",
+padding: "12px 20px",
+marginBottom: "24px",
+fontWeight: 600,
+color: "#b45a1b",
+}}
+>
+Members Sign Up · 18+
 </div>
 
+{/* JUNGLE THREAD */}
+<div
+style={{
+color: "#000",
+fontSize: "18px",
+lineHeight: 1.6,
+flexGrow: 1,
+}}
+>
+<strong>Jungle Thread</strong>
+<p>
+This is a public reading space. Members-only posting.
+No referees. No moderation. Ideas stand on their own merit.
+</p>
+<p>
+The jungle is open.
+</p>
+</div>
+</div>
 </section>
+
+{/* FOOTER */}
+<footer
+style={{
+color: "#999",
+fontSize: "14px",
+textAlign: "center",
+padding: "24px",
+}}
+>
+© Polidish LLC · All rights reserved · Legal disclaimer · Count
+</footer>
+
 </main>
 )
 }
-
-/* helpers */
-const photoBox = (src: string) => ({
-position: 'relative' as const,
-height: '180px',
-backgroundImage: `url(${src})`,
-backgroundSize: 'cover',
-backgroundPosition: 'center',
-border: '4px solid #000'
-})
-
-const overlayText = {
-position: 'absolute' as const,
-bottom: '12px',
-left: '12px',
-color: '#f5c26b', // gold overlay
-fontSize: '20px',
-fontWeight: 600,
-textShadow: '1px 1px 2px #000'
-}
-
