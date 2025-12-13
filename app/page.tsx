@@ -1,67 +1,132 @@
+import Image from "next/image";
+
 export default function Page() {
 return (
-<main style={{ background: '#c65a1e', minHeight: '100vh', padding: '40px' }}>
+<main style={{ background: "#c65a1e", minHeight: "100vh" }}>
 
 {/* TOP BANNER */}
-<header style={{ background: '#fff', padding: '20px', textAlign: 'center' }}>
-<em>Politely dishing politics.</em>
-<br />
-<strong>May the best mind win.</strong>
-</header>
+<div
+style={{
+background: "#c65a1e",
+color: "#000",
+textAlign: "center",
+fontStyle: "italic",
+padding: "12px 0",
+borderBottom: "4px solid #000",
+}}
+>
+Politely dishing politics. May the best mind win.
+</div>
 
 {/* HERO */}
-<section style={{ marginTop: '40px' }}>
-<h1 style={{ fontWeight: 'bold' }}>
-Play fair.
-<br />
-You are cordially invited to the Polidish venue.
-</h1>
-<p><strong>Freedom is deliberate.</strong></p>
-</section>
-
-{/* MAIN LAYOUT */}
-<section style={{
-display: 'grid',
-gridTemplateColumns: '1fr 2fr',
-gap: '30px',
-marginTop: '40px'
-}}>
-
+<section
+style={{
+display: "grid",
+gridTemplateColumns: "1fr 2fr",
+gap: "24px",
+padding: "32px",
+}}
+>
 {/* LEFT COLUMN */}
-<aside style={{ border: '4px solid #000', padding: '20px' }}>
-<p><strong>Portrait / Ads / Pier / Peacock</strong></p>
-<p>Blog</p>
-<p>Store</p>
-</aside>
+<div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+<Image
+src="/pier.jpg"
+alt="Pier"
+width={600}
+height={800}
+style={{ width: "100%", height: "auto", border: "4px solid #000" }}
+/>
 
-{/* RIGHT COLUMN — JUNGLE THREAD */}
-<div style={{ border: '4px solid #000', padding: '20px', background: '#111', color: '#fff' }}>
-<h2>Members Sign-Up</h2>
+<Image
+src="/peacock.jpg"
+alt="Peacock"
+width={600}
+height={800}
+style={{ width: "100%", height: "auto", border: "4px solid #000" }}
+/>
+
+<div
+style={{
+border: "2px solid #000",
+padding: "12px",
+background: "#c65a1e",
+}}
+>
+Portrait / Ads / Pier / Peacock
+<br />
+Blog
+<br />
+Store
+</div>
+</div>
+
+{/* RIGHT COLUMN */}
+<div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+{/* MEMBERS SIGN-UP */}
+<div
+style={{
+background: "#000",
+color: "#fff",
+padding: "20px",
+border: "3px solid #000",
+}}
+>
+<h2 style={{ marginTop: 0 }}>Polidish</h2>
+<p>Transparent. Public view. Members-only posting.</p>
+
+<div style={{ display: "flex", gap: "8px" }}>
 <input
 placeholder="your@email.com"
-style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
+style={{
+flex: 1,
+padding: "10px",
+border: "none",
+}}
 />
-<button style={{ padding: '10px', background: '#f5c96a', border: 'none' }}>
+<button
+style={{
+background: "#f2c94c",
+border: "none",
+padding: "10px 16px",
+fontWeight: "bold",
+}}
+>
 Join
 </button>
-
-<div style={{ marginTop: '30px', border: '2px solid #555', padding: '20px' }}>
-<em>Jungle loading…</em>
 </div>
 </div>
 
+{/* JUNGLE THREAD */}
+<div
+style={{
+background: "#fff",
+color: "#000",
+padding: "24px",
+border: "3px solid #000",
+flexGrow: 1,
+}}
+>
+<h3>Welcome to the Jungle Thread — Members Only</h3>
+<p style={{ fontStyle: "italic" }}>
+No posts yet — the first verified voice starts the fire.
+</p>
+</div>
+</div>
 </section>
 
 {/* FOOTER */}
-<footer style={{ marginTop: '60px', fontSize: '14px' }}>
-<p>Polidish LLC is not legally responsible for your poor judgment.</p>
-<p>
-If you endanger children, threaten terrorism, or break the law,
-you reveal yourself.
-</p>
-<p>© 2025 Polidish LLC · Day I · 127 Minds</p>
+<footer
+style={{
+padding: "24px",
+fontSize: "14px",
+color: "#000",
+}}
+>
+Polidish LLC is not legally responsible for your poor judgment.
+If you endanger children, threaten terrorism, or break the law, you reveal yourself.
+<br />
+© 2025 Polidish LLC · Day I · 127 Minds
 </footer>
-
 </main>
-)
+);
 }
