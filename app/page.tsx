@@ -1,77 +1,144 @@
 export default function Page() {
 return (
-<main style={{ background: '#8b3a1a', minHeight: '100vh', color: '#111' }}>
-
+<main
+style={{
+minHeight: '100vh',
+background: '#c55a1d', // burnt orange
+fontFamily: 'Georgia, serif',
+}}
+>
 {/* TOP BANNER */}
-<div style={{
+<section
+style={{
 background: '#fff',
-color: '#c45a1a',
+color: '#c55a1d',
 textAlign: 'center',
-padding: '12px 20px',
+padding: '20px',
+borderBottom: '4px solid #000',
 fontStyle: 'italic',
-fontWeight: 500,
-borderBottom: '4px solid #000'
-}}>
-Politely dishing politics. <em>May the best mind win.</em>
-</div>
+}}
+>
+<h1 style={{ margin: 0 }}>
+Politely dishing politics. <br />
+May the best mind win.
+</h1>
+</section>
 
 {/* HERO */}
-<section style={{
-padding: '40px 20px 30px',
-textAlign: 'center',
-background: '#f5f1ea',
-borderBottom: '6px solid #000'
-}}>
-<h1 style={{ fontSize: '40px', margin: '0 0 10px' }}>
+<section
+style={{
+background: '#000',
+color: '#f5c96a',
+padding: '30px',
+borderBottom: '4px solid #000',
+}}
+>
+<h2 style={{ margin: 0, fontWeight: 'bold' }}>
 Play fair.
-</h1>
-<p style={{ fontSize: '20px', margin: '0 0 14px' }}>
-You’re cordially invited to the political venue.
+</h2>
+<p style={{ marginTop: '10px' }}>
+You are cordially invited to the political venue.
 </p>
-<p style={{ fontWeight: 'bold', letterSpacing: '0.5px' }}>
+<p style={{ marginTop: '10px', fontStyle: 'italic' }}>
 Freedom is deliberate.
 </p>
 </section>
 
-{/* MAIN BODY */}
-<section style={{
-display: 'grid',
-gridTemplateColumns: '1fr 2fr',
+{/* MAIN TWO-COLUMN LAYOUT */}
+<section
+style={{
+display: 'flex',
 gap: '20px',
 padding: '30px',
-maxWidth: '1400px',
-margin: '0 auto'
-}}>
-
-{/* LEFT COLUMN (1/3) */}
-<aside style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-
-{['Canter', 'Peacock', 'Blog', 'Store'].map(label => (
-<div key={label} style={{
+}}
+>
+{/* LEFT COLUMN — 1/3 */}
+<aside
+style={{
+flex: 1,
 background: '#000',
 color: '#f5c96a',
 padding: '20px',
-border: '3px solid #f5c96a',
-textAlign: 'center',
-fontWeight: 'bold'
-}}>
-{label}
-</div>
-))}
-
-<div style={{
-background: '#000',
-color: '#ccc',
-padding: '20px',
-border: '3px solid #444',
-textAlign: 'center'
-}}>
-Advertisement
+border: '4px solid #000',
+}}
+>
+<div style={{ marginBottom: '20px' }}>
+<strong>Pier / Peacock</strong>
+<p style={{ fontSize: '14px' }}>
+Luxury partners meet High Worth While Individuals.
+</p>
 </div>
 
+<div style={{ marginBottom: '20px' }}>
+<button style={buttonStyle}>Polidish Blog</button>
+</div>
+
+<div>
+<button style={buttonStyle}>Polidish Store</button>
+</div>
 </aside>
 
-{/* RIGHT COLUMN (2/3) */}
-<div style={{
+{/* RIGHT COLUMN — 2/3 */}
+<section
+style={{
+flex: 2,
+background: '#111',
+color: '#f5c96a',
+padding: '20px',
+border: '4px solid #000',
+}}
+>
+{/* MEMBER SIGNUP */}
+<div
+style={{
 background: '#000',
-border: '4
+padding: '20px',
+marginBottom: '20px',
+border: '2px solid #f5c96a',
+}}
+>
+<h3>Members</h3>
+<p>Verified contributors. Public discourse.</p>
+<input
+placeholder="your@email.com"
+style={{
+width: '100%',
+padding: '10px',
+marginTop: '10px',
+border: '2px solid #f5c96a',
+background: '#111',
+color: '#f5c96a',
+}}
+/>
+</div>
+
+{/* JUNGLE THREAD */}
+<div
+style={{
+background: '#000',
+padding: '30px',
+border: '2px solid #f5c96a',
+minHeight: '300px',
+}}
+>
+<h3>Welcome to the Jungle Thread — Members Only</h3>
+<p style={{ fontStyle: 'italic' }}>
+No posts yet — the first verified voice starts the fire.
+</p>
+</div>
+</section>
+</section>
+
+{/* FOOTER */}
+<footer
+style={{
+background: '#000',
+color: '#f5c96a',
+padding: '20px',
+fontSize: '12px',
+borderTop: '4px solid #000',
+}}
+>
+<p>
+Polidish LLC is not legally responsible for your poor judgment.
+You endanger children, threaten terrorism, or break the law — you reveal yourself
