@@ -1,23 +1,24 @@
-export const dynamic = 'force-dynamic';
-
-export default function HoldingPage() {
+export default function Home() {
 return (
-<main
+<main style={{ margin: 0, padding: 0 }}>
+<section
 style={{
-minHeight: '100vh',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'center',
-backgroundColor: '#ffffff',
-fontFamily: 'serif',
-textAlign: 'center',
-padding: '2rem',
+width: "100%",
+minHeight: "100vh",
+overflow: "hidden",
 }}
 >
-<div>
-<h1>Polidish</h1>
-<p>Preparing the venue.</p>
-</div>
+<img
+src="/peacock.jpeg"
+alt="Polidish hero image"
+style={{
+width: "100%",
+height: "100vh",
+objectFit: "cover",
+display: "block",
+}}
+/>
+</section>
 </main>
 );
 }
