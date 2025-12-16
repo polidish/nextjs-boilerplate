@@ -1,210 +1,166 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClientComponentClient();
+/* === SUPABASE === */
+const supabase = createClient(
+process.env.NEXT_PUBLIC_SUPABASE_URL!,
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+/* === AD ROTATION === */
+const images = [
+'/peacock.jpeg',
+'/pier.jpeg',
+'/decanter.jpeg',
+]
+
+const DURATIONS = [15000, 30000, 60000] // ms
+const TRANSITION = 15000 // fade duration
 
 export default function Page() {
-const [email, setEmail] = useState("");
-const [status, setStatus] = useState("");
+const [indexes, setIndexes] = useState([0, 1, 2])
+const [email, setEmail] = useState('')
 
-async function handleMagicLink(e: React.FormEvent) {
-e.preventDefault();
-setStatus("Sending magic link…");
+useEffect(() => {
+const timers = DURATIONS.map((duration, i) =>
+setInterval(() => {
+setIndexes(prev => {
+const next = [...prev]
+next[i] = (next[i] + 1) % images.length
+return next
+})
+}, duration + TRANSITION)
+)
+return () => timers.forEach(clearInterval)
+}, [])
 
-const { error } = await supabase.auth.signInWithOtp({
-email,
-options: { emailRedirectTo: window.location.origin }
-});
-
-setStatus(error ? "Error sending link." : "Check your email for the magic link.");
+const signIn = async () => {
+if (!email) return
+await supabase.auth.signInWithOtp({ email })
+alert('Check your email for the link.')
 }
 
 return (
-<main className="page">
-{/* LOGO — TOP LEFT */}
-<div className="logo">
-<img src="/_logo polidish.png" alt="Polidish" />
-</div>
+<main style={{ minHeight: '100vh', background: '#f5f1eb' }}>
 
-{/* LAYOUT */}
-<section className="layout">
-{/* LEFT COLUMN (OUTPOST PLACEHOLDER) */}
-<aside className="left">
-{/* Keep your ad boxes here if already wired */}
-</aside>
-
-{/* RIGHT COLUMN (VENUE) */}
-<section className="right">
-{/* HEADER (ABOVE DISCUSSION) */}
-<header className="header">
-<em>Politely dishing politics.</em>{" "}
-<strong>May the best mind win.</strong>
+{/* ===== HEADER ===== */}
+<header style={{
+display: 'flex',
+alignItems: 'center',
+padding: '16px',
+background: '#fff',
+borderBottom: '1px solid #000'
+}}>
+<img
+src="/logo_polidish.png"
+alt="Polidish"
+style={{ height: 48 }}
+/>
 </header>
 
-{/* FULL WHITE VENUE */}
-<div className="venue">
-<div className="hero-line">
-Freedom is deliberate. Welcome to the Jungle Thread.
+{/* ===== BODY ===== */}
+<section style={{
+display: 'grid',
+gridTemplateColumns: '1fr 2fr',
+gap: '16px',
+padding: '16px'
+}}>
+
+{/* ===== LEFT COLUMN — ADS ===== */}
+<div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+{[0, 1, 2].map(i => (
+<div
+key={i}
+style={{
+border: '2px solid #000',
+height: 220,
+overflow: 'hidden',
+position: 'relative'
+}}
+>
+<img
+src={images[indexes[i]]}
+alt="Ad"
+style={{
+width: '100%',
+height: '100%',
+objectFit: 'cover',
+transition: `opacity ${TRANSITION}ms ease-in-out`
+}}
+/>
+</div>
+))}
 </div>
 
-<div className="jungle-head">
-<strong>Jungle Thread</strong>
+{/* ===== RIGHT COLUMN — VENUE ===== */}
+<div style={{
+background: '#fff',
+padding: '24px',
+border: '2px solid #000',
+display: 'flex',
+flexDirection: 'column',
+justifyContent: 'space-between'
+}}>
+
+{/* TITLE */}
+<div>
+<h1 style={{ marginBottom: 8 }}>
+Politely Dishing Politics — May the Best Mind Win
+</h1>
+
+<h2 style={{ marginTop: 0 }}>
+Welcome to the Jungle Thread
+</h2>
+
+{/* SIGN UP */}
+<div style={{ marginTop: 16 }}>
+<strong>Members Join</strong>
+<div style={{ fontSize: 12 }}>
+Membership is private. Your name appears only when you post.
 </div>
 
-{/* MAGIC BUTTON */}
-<form className="signup" onSubmit={handleMagicLink}>
+<div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
 <input
 type="email"
-required
-placeholder="Email for member sign-up"
+placeholder="email"
 value={email}
-onChange={(e) => setEmail(e.target.value)}
+onChange={e => setEmail(e.target.value)}
+style={{ padding: 8, flex: 1 }}
 />
-<button type="submit">Members Sign Up</button>
-</form>
+<button onClick={signIn} style={{ padding: '8px 16px' }}>
+Sign up
+</button>
+</div>
+</div>
+</div>
 
-<div className="status">{status}</div>
-
-<div className="age-note">
-18+ only. By visiting or joining Polidish, you affirm that you are at
-least 18 years of age.
+{/* JUNGLE THREAD PLACEHOLDER */}
+<div style={{ marginTop: 32 }}>
+{/* Jungle thread renders here */}
 </div>
 </div>
 </section>
-</section>
 
-{/* FOOTER */}
-<footer className="footer">
-<div>© Polidish LLC</div>
+{/* ===== FOOTER ===== */}
+<footer style={{
+borderTop: '1px solid #000',
+padding: '12px',
+fontSize: 12,
+display: 'flex',
+justifyContent: 'space-between'
+}}>
 <div>
-Legal disclaimer: Opinions expressed by users are their own. Polidish
-does not endorse or verify user content except as required by law.
+Polidish LLC is not legally responsible for your poor judgment.
+If you endanger children, threaten terrorism, or break the law, you reveal yourself.
+Two factor authentication. It’s a troll-free freedom fest.
 </div>
-<div>
-18+ only. By visiting or joining Polidish, you affirm that you are at
-least 18 years of age.
+<div style={{ fontSize: 10 }}>
+© 2025 Polidish LLC · 127 Minds · Day 1
 </div>
 </footer>
-
-{/* STYLES */}
-<style>{`
-.page {
-background: #d67c1c;
-min-height: 100vh;
-padding: 18px;
-font-family: Georgia, "Times New Roman", Times, serif;
-}
-
-.logo {
-position: absolute;
-top: 18px;
-left: 18px;
-border: 3px solid #000;
-padding: 6px;
-}
-
-.logo img {
-height: 44px;
-display: block;
-}
-
-.layout {
-display: flex;
-gap: 20px;
-margin-top: 90px;
-align-items: stretch;
-}
-
-.left {
-width: 380px;
-}
-
-.right {
-flex: 1;
-display: flex;
-flex-direction: column;
-}
-
-.header {
-font-size: 20px;
-margin-bottom: 10px;
-}
-
-.venue {
-flex: 1;
-background: #fff;
-border: 4px solid #000;
-padding: 16px;
-}
-
-.hero-line {
-font-size: 18px;
-margin-bottom: 14px;
-}
-
-.jungle-head {
-font-size: 18px;
-margin-bottom: 12px;
-}
-
-.signup {
-display: flex;
-gap: 8px;
-margin-bottom: 10px;
-}
-
-.signup input {
-flex: 1;
-padding: 8px;
-border: 2px solid #000;
-font-family: inherit;
-}
-
-.signup button {
-padding: 8px 12px;
-border: 2px solid #000;
-background: #fff;
-font-family: inherit;
-font-weight: bold;
-cursor: pointer;
-}
-
-.status {
-margin-bottom: 10px;
-font-size: 14px;
-}
-
-.age-note {
-font-size: 14px;
-font-style: italic;
-}
-
-.footer {
-margin-top: 24px;
-padding: 14px 18px;
-background: #000;
-color: #f5d35b;
-font-size: 13px;
-line-height: 1.4;
-border-top: 4px solid #000;
-}
-
-.footer div:first-child {
-font-weight: bold;
-margin-bottom: 4px;
-}
-
-@media (max-width: 900px) {
-.layout {
-flex-direction: column;
-}
-.left {
-width: 100%;
-}
-}
-`}</style>
 </main>
-);
+)
 }
+
