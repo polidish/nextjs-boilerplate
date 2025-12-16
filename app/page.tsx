@@ -3,37 +3,38 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-const ADS = [
+const IMAGES = [
 {
 src: '/pier.jpeg',
 caption: 'Visualize your ad right here, to the left, or in the center.',
-duration: 15000,
 },
 {
 src: '/decanter.jpeg',
 caption: 'Advertisements are absolutely uncurated for your privacy.',
-duration: 30000,
 },
 {
 src: '/peacock.jpeg',
 caption:
 'Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
-duration: 60000,
 },
 ];
 
-export default function Page() {
-const [index, setIndex] = useState(0);
+function RotatingAd({
+startIndex,
+hold,
+}: {
+startIndex: number;
+hold: number;
+}) {
+const [index, setIndex] = useState(startIndex);
 const [visible, setVisible] = useState(true);
 
 useEffect(() => {
-const current = ADS[index];
-const hold = current.duration;
 const transition = 15000;
 
 const t1 = setTimeout(() => setVisible(false), hold);
 const t2 = setTimeout(() => {
-setIndex((i) => (i + 1) % ADS.length);
+setIndex((i) => (i + 1) % IMAGES.length);
 setVisible(true);
 }, hold + transition);
 
@@ -41,8 +42,42 @@ return () => {
 clearTimeout(t1);
 clearTimeout(t2);
 };
-}, [index]);
+}, [index, hold]);
 
+return (
+<div style={{ border: '3px solid black', position: 'relative' }}>
+<div
+style={{
+opacity: visible ? 1 : 0,
+transition: 'opacity 15s linear',
+}}
+>
+<Image
+src={IMAGES[index].src}
+alt="Advertisement"
+width={300}
+height={450}
+style={{ width: '100%', height: 'auto' }}
+/>
+<div
+style={{
+position: 'absolute',
+bottom: 16,
+left: 16,
+right: 16,
+color: 'gold',
+fontStyle: 'italic',
+fontSize: 14,
+}}
+>
+{IMAGES[index].caption}
+</div>
+</div>
+</div>
+);
+}
+
+export default function Page() {
 return (
 <main style={{ fontFamily: 'serif' }}>
 {/* HEADER */}
@@ -62,7 +97,7 @@ justifyContent: 'space-between',
 style={{
 fontSize: 18,
 fontWeight: 700,
-color: '#d9895b', // lighter warm orange
+color: '#d9895b',
 textTransform: 'uppercase',
 }}
 >
@@ -77,34 +112,14 @@ display: 'grid',
 gridTemplateColumns: '320px 1fr',
 gap: 24,
 padding: 24,
+alignItems: 'stretch',
 }}
 >
-{/* LEFT ADS */}
+{/* LEFT COLUMN */}
 <aside style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-<div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
-<div style={{ opacity: visible ? 1 : 0, transition: 'opacity 15s linear' }}>
-<Image
-src={ADS[index].src}
-alt="Advertisement"
-width={300}
-height={450}
-style={{ width: '100%', height: 'auto' }}
-/>
-<div
-style={{
-position: 'absolute',
-bottom: 16,
-left: 16,
-right: 16,
-color: 'gold',
-fontStyle: 'italic',
-fontSize: 14,
-}}
->
-{ADS[index].caption}
-</div>
-</div>
-</div>
+<RotatingAd startIndex={0} hold={15000} />
+<RotatingAd startIndex={1} hold={30000} />
+<RotatingAd startIndex={2} hold={60000} />
 
 <div
 style={{
@@ -131,32 +146,40 @@ POLIDISH.BLOG COMING SOON IN 2026 — MEMBERS EXTENDED DISH
 </div>
 </aside>
 
-{/* RIGHT VENUE */}
+{/* RIGHT COLUMN — MATCHED HEIGHT */}
 <section
 style={{
 border: '3px solid black',
 padding: 24,
 background: 'white',
+display: 'flex',
+flexDirection: 'column',
 }}
 >
-<h2 style={{ marginBottom: 8 }}>
-Politely dishing politics. May the best mind win.
-</h2>
+<h2>Politely dishing politics. May the best mind win.</h2>
 
-<p style={{ marginBottom: 16 }}>
-Freedom is deliberate. Welcome to the Jungle Thread.
-</p>
+<p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
 
-<button style={{ padding: '6px 14px', marginBottom: 12 }}>Enter</button>
+<button style={{ padding: '6px 14px', marginBottom: 12 }}>
+Enter
+</button>
 
+{/* JUNGLE THREAD */}
 <div
 style={{
 border: '1px solid #ccc',
-height: 360,
+flex: 1,
 overflowY: 'auto',
 marginBottom: 12,
 }}
-/>
+>
+<div style={{ padding: 12, borderBottom: '1px solid #ddd' }} />
+<div style={{ padding: 12, borderBottom: '1px solid #ddd' }} />
+<div style={{ padding: 12, borderBottom: '1px solid #ddd' }} />
+<div style={{ padding: 12, borderBottom: '1px solid #ddd' }} />
+<div style={{ padding: 12, borderBottom: '1px solid #ddd' }} />
+<div style={{ padding: 12, borderBottom: '1px solid #ddd' }} />
+</div>
 
 <div style={{ display: 'flex', gap: 8 }}>
 <input
