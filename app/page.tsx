@@ -1,195 +1,181 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
-const ADS = [
-{
-src: '/pier.jpeg',
-caption: 'Visualize your ad right here, to the left, or in the center.',
-duration: 15000,
-},
-{
-src: '/pier.jpeg',
-caption: 'Advertisements are absolutely uncurated for your privacy.',
-duration: 30000,
-},
-{
-src: '/pier.jpeg',
-caption:
-'Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
-duration: 60000,
-},
-];
+const supabase = createClient(
+process.env.NEXT_PUBLIC_SUPABASE_URL!,
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function Page() {
-const [index, setIndex] = useState(0);
-const [visible, setVisible] = useState(true);
+const [email, setEmail] = useState("");
+const [sent, setSent] = useState(false);
 
-useEffect(() => {
-const current = ADS[index];
-const hold = current.duration;
-const transition = 15000;
-
-const timeout1 = setTimeout(() => setVisible(false), hold);
-const timeout2 = setTimeout(() => {
-setIndex((i) => (i + 1) % ADS.length);
-setVisible(true);
-}, hold + transition);
-
-return () => {
-clearTimeout(timeout1);
-clearTimeout(timeout2);
+const sendMagicLink = async () => {
+if (!email) return;
+await supabase.auth.signInWithOtp({ email });
+setSent(true);
 };
-}, [index]);
 
 return (
-<main style={{ fontFamily: 'serif' }}>
+<main style={{ minHeight: "100vh", background: "#fff" }}>
 {/* HEADER */}
 <header
 style={{
-background: 'black',
-color: 'white',
-padding: '12px 24px',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'space-between',
+background: "#000",
+padding: "14px 24px",
+display: "flex",
+justifyContent: "space-between",
+alignItems: "center",
 }}
 >
-<div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-<Image
+<img
 src="/_logo polidish.png"
 alt="Polidish"
-width={48}
-height={48}
+style={{ height: "42px" }}
 />
-</div>
 
-<div style={{ display: 'flex', gap: 24, fontSize: 14 }}>
-<a href="https://polidish.blog" style={{ color: 'white' }}>
-Polidish.blog — Your turn / Move Logged
-</a>
-<a href="https://polidish.store" style={{ color: 'white' }}>
-Polidish.store — Original merch
-</a>
+<div
+style={{
+color: "#C15A2E",
+fontWeight: 700,
+fontSize: "18px",
+whiteSpace: "nowrap",
+}}
+>
+The venue for uncensored political discourse.
 </div>
 </header>
 
 {/* BODY */}
 <section
 style={{
-display: 'grid',
-gridTemplateColumns: '320px 1fr',
-gap: 24,
-padding: 24,
+display: "grid",
+gridTemplateColumns: "320px 1fr",
+gap: "28px",
+padding: "28px",
 }}
 >
-{/* LEFT ADS */}
-<aside style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+{/* OUTPOST */}
+<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+{[
+{
+img: "/ad1.jpg",
+text:
+"Visualize your ad right here, to the left, or in the center.",
+},
+{
+img: "/ad2.jpg",
+text:
+"Advertisements are absolutely uncurated for your privacy.",
+},
+{
+img: "/ad3.jpg",
+text:
+"Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).",
+},
+].map((ad, i) => (
+<div
+key={i}
+style={{
+position: "relative",
+border: "3px solid #000",
+}}
+>
+<img src={ad.img} style={{ width: "100%" }} />
 <div
 style={{
-border: '3px solid black',
-padding: 8,
-position: 'relative',
+position: "absolute",
+bottom: "12px",
+left: "12px",
+right: "12px",
+color: "#E3B341",
+fontStyle: "italic",
+fontSize: "14px",
 }}
 >
-<div
-style={{
-opacity: visible ? 1 : 0,
-transition: 'opacity 15s linear',
-}}
->
-<Image
-src={ADS[index].src}
-alt="Advertisement"
-width={300}
-height={450}
-style={{ width: '100%', height: 'auto' }}
-/>
-<div
-style={{
-position: 'absolute',
-bottom: 16,
-left: 16,
-right: 16,
-color: 'gold',
-fontStyle: 'italic',
-fontSize: 14,
-}}
->
-{ADS[index].caption}
+{ad.text}
 </div>
+</div>
+))}
+
+{/* BUTTONS */}
+<div style={{ display: "flex", gap: "12px" }}>
+<a
+href="https://polidish.blog"
+style={{
+background: "#E3B341",
+color: "#000",
+padding: "10px 14px",
+fontWeight: 600,
+textDecoration: "none",
+}}
+>
+Polidish.blog
+</a>
+<a
+href="https://polidish.store"
+style={{
+background: "#E3B341",
+color: "#000",
+padding: "10px 14px",
+fontWeight: 600,
+textDecoration: "none",
+}}
+>
+Polidish.store
+</a>
 </div>
 </div>
 
+{/* JUNGLE THREAD */}
 <div
 style={{
-border: '3px solid black',
-background: 'black',
-color: 'gold',
-padding: 12,
-textAlign: 'center',
+border: "1px solid #ddd",
+padding: "20px",
+minHeight: "100%",
 }}
 >
-POLIDISH.STORE COMING SOON FOR ORIGINAL POLIDISH BRAND MERCH
-</div>
+<h2>Welcome to the Jungle Thread.</h2>
 
-<div
-style={{
-border: '3px solid black',
-background: 'black',
-color: 'gold',
-padding: 12,
-textAlign: 'center',
-}}
->
-POLIDISH.BLOG COMING SOON IN 2026 — MEMBERS EXTENDED DISH
-</div>
-</aside>
-
-{/* RIGHT VENUE */}
-<section
-style={{
-border: '3px solid black',
-padding: 24,
-background: 'white',
-}}
->
-<h2 style={{ marginBottom: 8 }}>
-Politely dishing politics. May the best mind win.
-</h2>
-
-<p style={{ marginBottom: 16 }}>
-Freedom is deliberate. Welcome to the Jungle Thread.
+<p>
+Members join via magic link. Posting reveals your name. Reading does
+not.
 </p>
 
-<h3>Jungle Thread</h3>
-
-<div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
 <input
 type="email"
-placeholder="Email for member sign-up"
-style={{ flex: 1, padding: 8 }}
+placeholder="Enter email"
+value={email}
+onChange={(e) => setEmail(e.target.value)}
+style={{
+padding: "10px",
+width: "100%",
+marginBottom: "10px",
+}}
 />
-<button style={{ padding: '8px 16px' }}>Join</button>
-</div>
 
-<p style={{ marginTop: 12, fontSize: 12 }}>
-18+ only. By visiting or joining Polidish, you affirm that you are at
-least 18 years of age.
-</p>
-</section>
+<button
+onClick={sendMagicLink}
+style={{
+padding: "10px 16px",
+fontWeight: 600,
+}}
+>
+{sent ? "Check your email" : "Join"}
+</button>
+</div>
 </section>
 
 {/* FOOTER */}
 <footer
 style={{
-background: 'black',
-color: 'white',
-padding: '12px 24px',
-fontSize: 12,
-display: 'flex',
-justifyContent: 'space-between',
+borderTop: "1px solid #ddd",
+padding: "12px 24px",
+fontSize: "11px",
+display: "flex",
+justifyContent: "space-between",
 }}
 >
 <div>
@@ -198,7 +184,7 @@ endanger children, threaten terrorism, or break the law, you reveal
 yourself. Two factor authentication. It’s a troll-free freedom fest.
 </div>
 <div>
-© 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1
+© 2025 Polidish LLC. All rights reserved. — 127 Minds · Day 1
 </div>
 </footer>
 </main>
