@@ -1,24 +1,7 @@
-export default function Home() {
-return (
-<main style={{ margin: 0, padding: 0 }}>
-<section
-style={{
-width: "100%",
-minHeight: "100vh",
-overflow: "hidden",
-}}
->
+<div style={{ border: "2px solid #000", padding: "4px", display: "inline-block" }}>
 <img
-src="/peacock.jpeg"
-alt="Polidish hero image"
-style={{
-width: "100%",
-height: "100vh",
-objectFit: "cover",
-display: "block",
-}}
+src="/logo.png"
+alt="Polidish"
+style={{ display: "block", height: "48px", width: "auto" }}
 />
-</section>
-</main>
-);
-}
+</div>
