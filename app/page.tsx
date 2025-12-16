@@ -3,21 +3,19 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-/* === SUPABASE === */
 const supabase = createClient(
 process.env.NEXT_PUBLIC_SUPABASE_URL!,
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-/* === AD ROTATION === */
 const images = [
 '/peacock.jpeg',
 '/pier.jpeg',
 '/decanter.jpeg',
 ]
 
-const DURATIONS = [15000, 30000, 60000] // ms
-const TRANSITION = 15000 // fade duration
+const DURATIONS = [15000, 30000, 60000]
+const TRANSITION = 15000
 
 export default function Page() {
 const [indexes, setIndexes] = useState([0, 1, 2])
@@ -45,22 +43,21 @@ alert('Check your email for the link.')
 return (
 <main style={{ minHeight: '100vh', background: '#f5f1eb' }}>
 
-{/* ===== HEADER ===== */}
+{/* HEADER */}
 <header style={{
 display: 'flex',
 alignItems: 'center',
 padding: '16px',
-background: '#fff',
-borderBottom: '1px solid #000'
+background: '#000'
 }}>
 <img
-src="/logo_polidish.png"
+src="/_logo polidish.png"
 alt="Polidish"
 style={{ height: 48 }}
 />
 </header>
 
-{/* ===== BODY ===== */}
+{/* BODY */}
 <section style={{
 display: 'grid',
 gridTemplateColumns: '1fr 2fr',
@@ -68,7 +65,7 @@ gap: '16px',
 padding: '16px'
 }}>
 
-{/* ===== LEFT COLUMN — ADS ===== */}
+{/* LEFT — ADS */}
 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 {[0, 1, 2].map(i => (
 <div
@@ -76,8 +73,7 @@ key={i}
 style={{
 border: '2px solid #000',
 height: 220,
-overflow: 'hidden',
-position: 'relative'
+overflow: 'hidden'
 }}
 >
 <img
@@ -94,7 +90,7 @@ transition: `opacity ${TRANSITION}ms ease-in-out`
 ))}
 </div>
 
-{/* ===== RIGHT COLUMN — VENUE ===== */}
+{/* RIGHT — VENUE */}
 <div style={{
 background: '#fff',
 padding: '24px',
@@ -104,17 +100,15 @@ flexDirection: 'column',
 justifyContent: 'space-between'
 }}>
 
-{/* TITLE */}
 <div>
-<h1 style={{ marginBottom: 8 }}>
+<h1>
 Politely Dishing Politics — May the Best Mind Win
 </h1>
 
-<h2 style={{ marginTop: 0 }}>
+<h2>
 Welcome to the Jungle Thread
 </h2>
 
-{/* SIGN UP */}
 <div style={{ marginTop: 16 }}>
 <strong>Members Join</strong>
 <div style={{ fontSize: 12 }}>
@@ -136,14 +130,13 @@ Sign up
 </div>
 </div>
 
-{/* JUNGLE THREAD PLACEHOLDER */}
 <div style={{ marginTop: 32 }}>
 {/* Jungle thread renders here */}
 </div>
 </div>
 </section>
 
-{/* ===== FOOTER ===== */}
+{/* FOOTER */}
 <footer style={{
 borderTop: '1px solid #000',
 padding: '12px',
@@ -157,10 +150,9 @@ If you endanger children, threaten terrorism, or break the law, you reveal yours
 Two factor authentication. It’s a troll-free freedom fest.
 </div>
 <div style={{ fontSize: 10 }}>
-© 2025 Polidish LLC · 127 Minds · Day 1
+© 2025 Polidish LLC. All rights reserved · 127 Minds · Day 1
 </div>
 </footer>
 </main>
 )
 }
-
