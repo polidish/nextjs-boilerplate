@@ -1,181 +1,222 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
-const supabase = createClient(
-process.env.NEXT_PUBLIC_SUPABASE_URL!,
-process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const ADS = [
+{
+src: '/pier.jpeg',
+caption: 'Visualize your ad right here, to the left, or in the center.',
+duration: 15000,
+},
+{
+src: '/decanter.jpeg',
+caption: 'Advertisements are absolutely uncurated for your privacy.',
+duration: 30000,
+},
+{
+src: '/peacock.jpeg',
+caption:
+'Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
+duration: 60000,
+},
+];
 
 export default function Page() {
-const [email, setEmail] = useState("");
-const [sent, setSent] = useState(false);
+const [index, setIndex] = useState(0);
+const [visible, setVisible] = useState(true);
 
-const sendMagicLink = async () => {
-if (!email) return;
-await supabase.auth.signInWithOtp({ email });
-setSent(true);
+useEffect(() => {
+const current = ADS[index];
+const hold = current.duration;
+const transition = 15000;
+
+const timeout1 = setTimeout(() => setVisible(false), hold);
+const timeout2 = setTimeout(() => {
+setIndex((i) => (i + 1) % ADS.length);
+setVisible(true);
+}, hold + transition);
+
+return () => {
+clearTimeout(timeout1);
+clearTimeout(timeout2);
 };
+}, [index]);
 
 return (
-<main style={{ minHeight: "100vh", background: "#fff" }}>
+<main style={{ fontFamily: 'serif' }}>
 {/* HEADER */}
 <header
 style={{
-background: "#000",
-padding: "14px 24px",
-display: "flex",
-justifyContent: "space-between",
-alignItems: "center",
+background: 'black',
+color: 'white',
+padding: '12px 24px',
+display: 'flex',
+alignItems: 'center',
+justifyContent: 'space-between',
 }}
 >
-<img
+<div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+<Image
 src="/_logo polidish.png"
 alt="Polidish"
-style={{ height: "42px" }}
+width={48}
+height={48}
 />
+</div>
 
 <div
 style={{
-color: "#C15A2E",
+color: '#C15A2E',
 fontWeight: 700,
-fontSize: "18px",
-whiteSpace: "nowrap",
+fontSize: 14,
+textTransform: 'uppercase',
 }}
 >
-The venue for uncensored political discourse.
+THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
 {/* BODY */}
 <section
 style={{
-display: "grid",
-gridTemplateColumns: "320px 1fr",
-gap: "28px",
-padding: "28px",
+display: 'grid',
+gridTemplateColumns: '320px 1fr',
+gap: 24,
+padding: 24,
 }}
 >
-{/* OUTPOST */}
-<div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-{[
-{
-img: "/ad1.jpg",
-text:
-"Visualize your ad right here, to the left, or in the center.",
-},
-{
-img: "/ad2.jpg",
-text:
-"Advertisements are absolutely uncurated for your privacy.",
-},
-{
-img: "/ad3.jpg",
-text:
-"Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).",
-},
-].map((ad, i) => (
+{/* LEFT ADS */}
+<aside style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+<div
+style={{
+border: '3px solid black',
+padding: 8,
+position: 'relative',
+}}
+>
+<div
+style={{
+opacity: visible ? 1 : 0,
+transition: 'opacity 15s linear',
+}}
+>
+<Image
+src={ADS[index].src}
+alt="Advertisement"
+width={300}
+height={450}
+style={{ width: '100%', height: 'auto' }}
+/>
+<div
+style={{
+position: 'absolute',
+bottom: 16,
+left: 16,
+right: 16,
+color: 'gold',
+fontStyle: 'italic',
+fontSize: 14,
+}}
+>
+{ADS[index].caption}
+</div>
+</div>
+</div>
+
+<div
+style={{
+border: '3px solid black',
+background: 'black',
+color: 'gold',
+padding: 12,
+textAlign: 'center',
+}}
+>
+POLIDISH.STORE COMING SOON FOR ORIGINAL POLIDISH BRAND MERCH
+</div>
+
+<div
+style={{
+border: '3px solid black',
+background: 'black',
+color: 'gold',
+padding: 12,
+textAlign: 'center',
+}}
+>
+POLIDISH.BLOG COMING SOON IN 2026 — MEMBERS EXTENDED DISH
+</div>
+</aside>
+
+{/* RIGHT VENUE */}
+<section
+style={{
+border: '3px solid black',
+padding: 24,
+background: 'white',
+display: 'flex',
+flexDirection: 'column',
+}}
+>
+<h2 style={{ marginBottom: 8 }}>
+Politely dishing politics. May the best mind win.
+</h2>
+
+<p style={{ marginBottom: 16 }}>
+Freedom is deliberate. Welcome to the Jungle Thread.
+</p>
+
+<button style={{ marginBottom: 12, padding: '6px 14px' }}>
+Enter
+</button>
+
+{/* SCROLLING JUNGLE THREAD */}
+<div
+style={{
+border: '1px solid #ccc',
+height: 360,
+overflowY: 'auto',
+}}
+>
+{[...Array(20)].map((_, i) => (
 <div
 key={i}
 style={{
-position: "relative",
-border: "3px solid #000",
+padding: '10px 0',
+borderBottom: '1px solid #ccc',
 }}
 >
-<img src={ad.img} style={{ width: "100%" }} />
-<div
-style={{
-position: "absolute",
-bottom: "12px",
-left: "12px",
-right: "12px",
-color: "#E3B341",
-fontStyle: "italic",
-fontSize: "14px",
-}}
->
-{ad.text}
-</div>
+{/* placeholder for post */}
 </div>
 ))}
-
-{/* BUTTONS */}
-<div style={{ display: "flex", gap: "12px" }}>
-<a
-href="https://polidish.blog"
-style={{
-background: "#E3B341",
-color: "#000",
-padding: "10px 14px",
-fontWeight: 600,
-textDecoration: "none",
-}}
->
-Polidish.blog
-</a>
-<a
-href="https://polidish.store"
-style={{
-background: "#E3B341",
-color: "#000",
-padding: "10px 14px",
-fontWeight: 600,
-textDecoration: "none",
-}}
->
-Polidish.store
-</a>
-</div>
 </div>
 
-{/* JUNGLE THREAD */}
-<div
-style={{
-border: "1px solid #ddd",
-padding: "20px",
-minHeight: "100%",
-}}
->
-<h2>Welcome to the Jungle Thread.</h2>
-
-<p>
-Members join via magic link. Posting reveals your name. Reading does
-not.
-</p>
-
+<div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
 <input
 type="email"
-placeholder="Enter email"
-value={email}
-onChange={(e) => setEmail(e.target.value)}
-style={{
-padding: "10px",
-width: "100%",
-marginBottom: "10px",
-}}
+placeholder="Email for member sign-up"
+style={{ flex: 1, padding: 8 }}
 />
-
-<button
-onClick={sendMagicLink}
-style={{
-padding: "10px 16px",
-fontWeight: 600,
-}}
->
-{sent ? "Check your email" : "Join"}
-</button>
+<button style={{ padding: '8px 16px' }}>Join</button>
 </div>
+
+<p style={{ marginTop: 12, fontSize: 12 }}>
+18+ only. By visiting or joining Polidish, you affirm that you are at
+least 18 years of age.
+</p>
+</section>
 </section>
 
 {/* FOOTER */}
 <footer
 style={{
-borderTop: "1px solid #ddd",
-padding: "12px 24px",
-fontSize: "11px",
-display: "flex",
-justifyContent: "space-between",
+background: 'black',
+color: 'white',
+padding: '12px 24px',
+fontSize: 12,
+display: 'flex',
+justifyContent: 'space-between',
 }}
 >
 <div>
@@ -184,7 +225,7 @@ endanger children, threaten terrorism, or break the law, you reveal
 yourself. Two factor authentication. It’s a troll-free freedom fest.
 </div>
 <div>
-© 2025 Polidish LLC. All rights reserved. — 127 Minds · Day 1
+© 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1
 </div>
 </footer>
 </main>
