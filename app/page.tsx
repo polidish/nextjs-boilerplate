@@ -31,15 +31,15 @@ const current = ADS[index];
 const hold = current.duration;
 const transition = 15000;
 
-const timeout1 = setTimeout(() => setVisible(false), hold);
-const timeout2 = setTimeout(() => {
+const t1 = setTimeout(() => setVisible(false), hold);
+const t2 = setTimeout(() => {
 setIndex((i) => (i + 1) % ADS.length);
 setVisible(true);
 }, hold + transition);
 
 return () => {
-clearTimeout(timeout1);
-clearTimeout(timeout2);
+clearTimeout(t1);
+clearTimeout(t2);
 };
 }, [index]);
 
@@ -56,20 +56,13 @@ alignItems: 'center',
 justifyContent: 'space-between',
 }}
 >
-<div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-<Image
-src="/_logo polidish.png"
-alt="Polidish"
-width={48}
-height={48}
-/>
-</div>
+<Image src="/_logo polidish.png" alt="Polidish" width={48} height={48} />
 
 <div
 style={{
-color: '#C15A2E',
+fontSize: 18,
 fontWeight: 700,
-fontSize: 14,
+color: '#d9895b', // lighter warm orange
 textTransform: 'uppercase',
 }}
 >
@@ -88,19 +81,8 @@ padding: 24,
 >
 {/* LEFT ADS */}
 <aside style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-<div
-style={{
-border: '3px solid black',
-padding: 8,
-position: 'relative',
-}}
->
-<div
-style={{
-opacity: visible ? 1 : 0,
-transition: 'opacity 15s linear',
-}}
->
+<div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
+<div style={{ opacity: visible ? 1 : 0, transition: 'opacity 15s linear' }}>
 <Image
 src={ADS[index].src}
 alt="Advertisement"
@@ -155,8 +137,6 @@ style={{
 border: '3px solid black',
 padding: 24,
 background: 'white',
-display: 'flex',
-flexDirection: 'column',
 }}
 >
 <h2 style={{ marginBottom: 8 }}>
@@ -167,32 +147,18 @@ Politely dishing politics. May the best mind win.
 Freedom is deliberate. Welcome to the Jungle Thread.
 </p>
 
-<button style={{ marginBottom: 12, padding: '6px 14px' }}>
-Enter
-</button>
+<button style={{ padding: '6px 14px', marginBottom: 12 }}>Enter</button>
 
-{/* SCROLLING JUNGLE THREAD */}
 <div
 style={{
 border: '1px solid #ccc',
 height: 360,
 overflowY: 'auto',
+marginBottom: 12,
 }}
->
-{[...Array(20)].map((_, i) => (
-<div
-key={i}
-style={{
-padding: '10px 0',
-borderBottom: '1px solid #ccc',
-}}
->
-{/* placeholder for post */}
-</div>
-))}
-</div>
+/>
 
-<div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+<div style={{ display: 'flex', gap: 8 }}>
 <input
 type="email"
 placeholder="Email for member sign-up"
@@ -211,12 +177,13 @@ least 18 years of age.
 {/* FOOTER */}
 <footer
 style={{
-background: 'black',
-color: 'white',
+background: 'white',
+color: 'black',
 padding: '12px 24px',
 fontSize: 12,
 display: 'flex',
 justifyContent: 'space-between',
+borderTop: '1px solid #ccc',
 }}
 >
 <div>
