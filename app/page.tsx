@@ -73,31 +73,10 @@ fontSize: 14,
 
 export default function Page() {
 const [email, setEmail] = useState('');
-const [joinSent, setJoinSent] = useState(false);
-const [user, setUser] = useState<any>(null);
-const [vines, setVines] = useState<any[]>([]);
-const [draft, setDraft] = useState('');
+const [sent, setSent] = useState(false);
 
 useEffect(() => {
-const init = async () => {
-const { data: session } = await supabase.auth.getSession();
-setUser(session?.session?.user ?? null);
-
-const { data } = await supabase
-.from('vines')
-.select('*')
-.order('created_at', { ascending: true });
-
-if (data) setVines(data);
-};
-
-init();
-
-const { data: listener } = supabase.auth.onAuthStateChange(
-(_e, session) => setUser(session?.user ?? null)
-);
-
-return () => listener.subscription.unsubscribe();
+supabase.auth.getSession();
 }, []);
 
 const handleJoin = async () => {
@@ -107,30 +86,9 @@ options: {
 emailRedirectTo: 'https://polidish.com',
 },
 });
-if (!error) setJoinSent(true);
+
+if (!error) setSent(true);
 };
-
-const handlePost = async () => {
-if (!draft.trim() || !user) return;
-
-const { data, error } = await supabase
-.from('vines')
-.insert({ body: draft, user_id: user.id })
-.select()
-.single();
-
-if (!error && data) {
-setVines((v) => [...v, data]);
-setDraft('');
-}
-};
-
-const handleDelete = async (id: string) => {
-await supabase.from('vines').delete().eq('id', id);
-setVines((v) => v.filter((x) => x.id !== id));
-};
-
-const name = user?.email?.split('@')[0];
 
 return (
 <main style={{ fontFamily: 'serif' }}>
@@ -180,6 +138,7 @@ Politely dishing politics.
 <span className="rule-line">May the best mind win.</span>
 </h2>
 
+{/* SIGN-UP */}
 <div className="signup">
 <input
 type="email"
@@ -190,8 +149,8 @@ onChange={(e) => setEmail(e.target.value)}
 <button
 onClick={handleJoin}
 style={{
-background: joinSent ? 'gold' : 'black',
-color: joinSent ? 'black' : 'white',
+background: sent ? 'gold' : 'black',
+color: sent ? 'black' : 'white',
 border: '2px solid black',
 padding: '8px 12px',
 fontWeight: 600,
@@ -201,7 +160,7 @@ Join
 </button>
 </div>
 
-{joinSent && (
+{sent && (
 <div style={{ marginTop: 6 }}>
 An email has been sent with a magic link.
 </div>
@@ -210,31 +169,12 @@ An email has been sent with a magic link.
 <p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
 
 <div className="divider">
-The Jungle Thread only grows and grows…
+Jungle posting for verified members is coming soon.
 </div>
 
 <div className="scroll">
-{vines.map((v) => (
-<div key={v.id} style={{ marginBottom: 12 }}>
-<strong>{name}:</strong>
-<div style={{ whiteSpace: 'pre-wrap' }}>{v.body}</div>
-{user?.id === v.user_id && (
-<button onClick={() => handleDelete(v.id)}>Delete</button>
-)}
+<div className="enter">Member opinions will appear here.</div>
 </div>
-))}
-</div>
-
-{user && (
-<>
-<textarea
-value={draft}
-onChange={(e) => setDraft(e.target.value)}
-placeholder="Enter"
-/>
-<button onClick={handlePost}>Enter</button>
-</>
-)}
 
 <p className="age">
 18+ only. By visiting or joining Polidish, you affirm that you are at
@@ -254,6 +194,110 @@ yourself. Two factor authentication. It’s a troll-free freedom fest.
 © 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1
 </div>
 </footer>
+
+{/* STYLES */}
+<style jsx>{`
+.grid {
+display: grid;
+grid-template-columns: 320px 1fr;
+gap: 24px;
+padding: 24px;
+}
+
+.ads {
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+
+.jungle {
+border: 3px solid black;
+padding: 24px;
+display: flex;
+flex-direction: column;
+background: white;
+}
+
+.rule-line {
+display: inline;
+margin-left: 6px;
+}
+
+.signup {
+display: flex;
+gap: 8px;
+margin: 12px 0;
+}
+
+.signup input {
+flex: 1;
+padding: 8px;
+}
+
+.divider {
+margin: 12px 0;
+padding: 8px 0;
+border-top: 1px solid #bbb;
+border-bottom: 1px solid #bbb;
+text-align: center;
+}
+
+.scroll {
+border: 1px solid #ddd;
+padding: 12px;
+min-height: 260px;
+overflow-y: auto;
+}
+
+.enter {
+font-style: italic;
+}
+
+.age {
+font-size: 12px;
+margin-top: 12px;
+}
+
+.footer {
+width: 100%;
+display: flex;
+justify-content: space-between;
+gap: 16px;
+padding: 16px 24px;
+font-size: 12px;
+border-top: 2px solid black;
+background: white;
+box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+.grid {
+grid-template-columns: 1fr;
+}
+
+.ads {
+order: 2;
+}
+
+.jungle {
+order: 1;
+}
+
+.rule-line {
+display: block;
+margin-left: 0;
+}
+
+.scroll {
+min-height: 360px;
+}
+
+.footer {
+flex-direction: column;
+}
+}
+`}</style>
 </main>
 );
 }
+
