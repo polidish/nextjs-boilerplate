@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { supabase } from './lib/supabaseClient'; // ADDED
 
 const ADS = [
 {
@@ -71,6 +72,17 @@ fontSize: 14,
 }
 
 export default function Page() {
+const [email, setEmail] = useState(''); // ADDED
+
+const handleJoin = async () => { // ADDED
+await supabase.auth.signInWithOtp({
+email,
+options: {
+emailRedirectTo: 'https://polidish.com',
+},
+});
+};
+
 return (
 <main style={{ fontFamily: 'serif' }}>
 {/* HEADER */}
@@ -126,8 +138,10 @@ Politely dishing politics.
 <input
 type="email"
 placeholder="Email for member sign-up"
+value={email} // ADDED
+onChange={(e) => setEmail(e.target.value)} // ADDED
 />
-<button>Join</button>
+<button onClick={handleJoin}>Join</button> {/* ADDED */}
 </div>
 
 <p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
