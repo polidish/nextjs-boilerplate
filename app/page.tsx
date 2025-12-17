@@ -74,6 +74,11 @@ fontSize: 14,
 export default function Page() {
 const [email, setEmail] = useState(''); // ADDED
 
+// ADDED — completes magic-link login if user lands here from email
+useEffect(() => {
+supabase.auth.getSession();
+}, []);
+
 const handleJoin = async () => { // ADDED
 await supabase.auth.signInWithOtp({
 email,
