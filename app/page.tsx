@@ -44,13 +44,7 @@ clearTimeout(t2);
 
 return (
 <div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
-<div
-style={{
-opacity: visible ? 1 : 0,
-transition: 'opacity 15s linear',
-willChange: 'opacity',
-}}
->
+<div style={{ opacity: visible ? 1 : 0, transition: 'opacity 15s linear' }}>
 <Image
 src={ADS[index].src}
 alt="Advertisement"
@@ -87,13 +81,20 @@ color: 'white',
 padding: '12px 24px',
 display: 'flex',
 alignItems: 'center',
-justifyContent: 'space-between',
+gap: 16,
 }}
 >
-<Image src="/_logo polidish.png" alt="Polidish" width={48} height={48} />
+<Image
+src="/_logo polidish.png"
+alt="Polidish"
+width={96}
+height={96}
+style={{ width: 48, height: 48 }}
+priority
+/>
 <div
 style={{
-color: '#d8925c',
+color: '#d07a3a',
 fontSize: 'clamp(14px, 1.6vw, 20px)',
 letterSpacing: '0.05em',
 textTransform: 'uppercase',
@@ -106,23 +107,24 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 
 {/* BODY */}
 <section
-className="layout"
 style={{
 display: 'grid',
 gridTemplateColumns: '320px 1fr',
 gap: 24,
 padding: 24,
 }}
+className="layout"
 >
-{/* LEFT COLUMN — DESKTOP ADS */}
-<aside className="desktop-ads" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+{/* LEFT COLUMN — ADS */}
+<aside className="ads">
 <AdFrame startIndex={0} />
 <AdFrame startIndex={1} />
 <AdFrame startIndex={2} />
 </aside>
 
-{/* RIGHT COLUMN — JUNGLE THREAD */}
+{/* JUNGLE THREAD */}
 <section
+className="thread"
 style={{
 border: '3px solid black',
 padding: 24,
@@ -131,6 +133,16 @@ display: 'flex',
 flexDirection: 'column',
 }}
 >
+{/* MOBILE SIGN-UP FIRST */}
+<div className="mobile-signup">
+<input
+type="email"
+placeholder="Email for member sign-up"
+style={{ flex: 1, padding: 8 }}
+/>
+<button style={{ padding: '8px 16px' }}>Join</button>
+</div>
+
 <h2>Politely dishing politics. May the best mind win.</h2>
 <p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
 
@@ -150,14 +162,15 @@ The Jungle Thread only grows and grows…
 style={{
 flex: 1,
 border: '1px solid #ddd',
-padding: 8,
-overflowY: 'auto',
+padding: 12,
+minHeight: 200,
 }}
 >
-<div style={{ fontStyle: 'italic', opacity: 0.8 }}>Enter</div>
+<div style={{ fontStyle: 'italic' }}>Enter</div>
 </div>
 
-<div className="signup-block" style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+{/* DESKTOP SIGN-UP */}
+<div className="desktop-signup">
 <input
 type="email"
 placeholder="Email for member sign-up"
@@ -173,54 +186,71 @@ least 18 years of age.
 </section>
 </section>
 
-{/* MOBILE ADS — BELOW THREAD */}
-<section className="mobile-ads" style={{ display: 'none', padding: '0 24px 24px' }}>
-<div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-<AdFrame startIndex={0} />
-<AdFrame startIndex={1} />
-<AdFrame startIndex={2} />
-</div>
-</section>
-
 {/* FOOTER */}
 <footer
 style={{
+width: '100vw',
 background: 'white',
 color: 'black',
-padding: '12px 24px',
+padding: '16px 24px',
 fontSize: 12,
+borderTop: '2px solid black',
 display: 'flex',
 justifyContent: 'space-between',
-borderTop: '2px solid black',
+gap: 24,
 }}
 >
-<div>
+<div style={{ maxWidth: 600 }}>
 Polidish LLC is not legally responsible for your poor judgment. If you
 endanger children, threaten terrorism, or break the law, you reveal
 yourself. Two factor authentication. It’s a troll-free freedom fest.
 </div>
-<div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1</div>
+<div style={{ textAlign: 'right' }}>
+© 2025 Polidish LLC. All rights reserved.
+<br />— 127 Minds Day 1
+</div>
 </footer>
 
-{/* MOBILE RULES */}
-<style jsx global>{`
+{/* RESPONSIVE RULES */}
+<style jsx>{`
+.ads {
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+
+.mobile-signup {
+display: none;
+gap: 8px;
+margin-bottom: 16px;
+}
+
+.desktop-signup {
+display: flex;
+gap: 8px;
+margin-top: 12px;
+}
+
 @media (max-width: 768px) {
 .layout {
-display: block !important;
-padding: 16px;
+grid-template-columns: 1fr;
 }
 
-.desktop-ads {
-display: none !important;
+.ads {
+order: 2;
 }
 
-.mobile-ads {
-display: block !important;
+.thread {
+order: 1;
 width: 100%;
 }
 
-footer {
-border-top: none;
+.mobile-signup {
+display: flex;
+}
+
+.desktop-signup {
+display: none;
 }
 }
 `}</style>
