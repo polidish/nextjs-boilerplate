@@ -3,17 +3,29 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-const ADS = [
+type Ad = {
+src: string;
+caption: string;
+duration: number;
+};
+
+const ADS_TOP: Ad[] = [
 {
 src: '/pier.jpeg',
 caption: 'Visualize your ad right here, to the left, or in the center.',
 duration: 15000,
 },
+];
+
+const ADS_MIDDLE: Ad[] = [
 {
 src: '/decanter.jpeg',
 caption: 'Advertisements are absolutely uncurated for your privacy.',
 duration: 30000,
 },
+];
+
+const ADS_BOTTOM: Ad[] = [
 {
 src: '/peacock.jpeg',
 caption:
@@ -22,17 +34,18 @@ duration: 60000,
 },
 ];
 
-function AdFrame({ startIndex }: { startIndex: number }) {
-const [index, setIndex] = useState(startIndex);
+function RotatingAd({ ads, width }: { ads: Ad[]; width: number }) {
+const [index, setIndex] = useState(0);
 const [visible, setVisible] = useState(true);
 
 useEffect(() => {
-const hold = ADS[index].duration;
+const current = ads[index];
+const hold = current.duration;
 const transition = 15000;
 
 const t1 = setTimeout(() => setVisible(false), hold);
 const t2 = setTimeout(() => {
-setIndex((i) => (i + 1) % ADS.length);
+setIndex((i) => (i + 1) % ads.length);
 setVisible(true);
 }, hold + transition);
 
@@ -40,15 +53,20 @@ return () => {
 clearTimeout(t1);
 clearTimeout(t2);
 };
-}, [index]);
+}, [index, ads]);
 
 return (
 <div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
-<div style={{ opacity: visible ? 1 : 0, transition: 'opacity 15s linear' }}>
+<div
+style={{
+opacity: visible ? 1 : 0,
+transition: 'opacity 15s linear',
+}}
+>
 <Image
-src={ADS[index].src}
+src={ads[index].src}
 alt="Advertisement"
-width={300}
+width={width}
 height={450}
 style={{ width: '100%', height: 'auto' }}
 />
@@ -63,7 +81,7 @@ fontStyle: 'italic',
 fontSize: 14,
 }}
 >
-{ADS[index].caption}
+{ads[index].caption}
 </div>
 </div>
 </div>
@@ -87,11 +105,9 @@ justifyContent: 'space-between',
 <Image src="/_logo polidish.png" alt="Polidish" width={48} height={48} />
 <div
 style={{
-color: '#d07a3a',
-fontSize: 'clamp(14px, 1.6vw, 20px)',
-letterSpacing: '0.05em',
-textTransform: 'uppercase',
+color: '#c96a2d',
 fontWeight: 600,
+fontSize: 14,
 }}
 >
 THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
@@ -99,70 +115,32 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </header>
 
 {/* BODY */}
-<section
-style={{
-display: 'grid',
-gridTemplateColumns: '320px 1fr',
-gap: 24,
-padding: 24,
-}}
->
-{/* LEFT COLUMN — THREE ADS */}
-<aside style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-<AdFrame startIndex={0} />
-<AdFrame startIndex={1} />
-<AdFrame startIndex={2} />
+<section className="layout">
+{/* LEFT COLUMN */}
+<aside className="ads">
+<RotatingAd ads={ADS_TOP} width={300} />
+<RotatingAd ads={ADS_MIDDLE} width={260} />
+<RotatingAd ads={ADS_BOTTOM} width={300} />
 </aside>
 
-{/* RIGHT COLUMN — JUNGLE THREAD */}
-<section
-style={{
-border: '3px solid black',
-padding: 24,
-background: 'white',
-display: 'flex',
-flexDirection: 'column',
-}}
->
+{/* RIGHT COLUMN */}
+<section className="venue">
 <h2>Politely dishing politics. May the best mind win.</h2>
-<p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
+<p>Freedom is deliberate. Welcome to the jungle thread.</p>
 
-{/* Gray divider */}
-<div
-style={{
-margin: '12px 0',
-padding: '8px 0',
-borderTop: '1px solid #bbb',
-borderBottom: '1px solid #bbb',
-textAlign: 'center',
-}}
->
-The Jungle Thread only grows and grows…
+<div className="thread">
+<em>enter</em>
+<div className="scroll">
+{/* posts will render here */}
+</div>
 </div>
 
-{/* Scroll */}
-<div
-style={{
-flex: 1,
-border: '1px solid #ddd',
-padding: 8,
-overflowY: 'auto',
-}}
->
-<div style={{ fontStyle: 'italic' }}>Enter</div>
+<div className="signup">
+<input type="email" placeholder="Email for member sign-up" />
+<button>Join</button>
 </div>
 
-{/* Sign-up */}
-<div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-<input
-type="email"
-placeholder="Email for member sign-up"
-style={{ flex: 1, padding: 8 }}
-/>
-<button style={{ padding: '8px 16px' }}>Join</button>
-</div>
-
-<p style={{ fontSize: 12, marginTop: 12 }}>
+<p style={{ fontSize: 12 }}>
 18+ only. By visiting or joining Polidish, you affirm that you are at
 least 18 years of age.
 </p>
@@ -178,7 +156,6 @@ padding: '12px 24px',
 fontSize: 12,
 display: 'flex',
 justifyContent: 'space-between',
-borderTop: '2px solid black',
 }}
 >
 <div>
@@ -188,6 +165,52 @@ yourself. Two factor authentication. It’s a troll-free freedom fest.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1</div>
 </footer>
+
+{/* MOBILE RULES */}
+<style>{`
+.layout {
+display: grid;
+grid-template-columns: 320px 1fr;
+gap: 24px;
+padding: 24px;
+}
+.ads {
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+.venue {
+border: 3px solid black;
+padding: 24px;
+background: white;
+}
+.thread {
+margin-top: 16px;
+}
+.scroll {
+max-height: 300px;
+overflow-y: auto;
+margin-top: 8px;
+}
+.signup {
+display: flex;
+gap: 8px;
+margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+.layout {
+display: flex;
+flex-direction: column;
+}
+.ads {
+order: 1;
+}
+.venue {
+order: 2;
+}
+}
+`}</style>
 </main>
 );
 }
