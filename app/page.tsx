@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { supabase } from './lib/supabaseClient'; // ADDED
+import { supabase } from './lib/supabaseClient';
 
 const ADS = [
 {
@@ -72,14 +72,22 @@ fontSize: 14,
 }
 
 export default function Page() {
-const [email, setEmail] = useState(''); // ADDED
+const [email, setEmail] = useState('');
+const [draft, setDraft] = useState('');
+const [sent, setSent] = useState(false);
+const [sending, setSending] = useState(false);
+const [confetti, setConfetti] = useState(false);
 
-// ADDED — completes magic-link login if user lands here from email
 useEffect(() => {
 supabase.auth.getSession();
 }, []);
 
-const handleJoin = async () => { // ADDED
+const handleJoin = async () => {
+setSending(true);
+setSent(true);
+setConfetti(true);
+setTimeout(() => setConfetti(false), 1500);
+
 await supabase.auth.signInWithOtp({
 email,
 options: {
@@ -90,6 +98,14 @@ emailRedirectTo: 'https://polidish.com',
 
 return (
 <main style={{ fontFamily: 'serif' }}>
+{confetti && (
+<div className="confetti">
+{Array.from({ length: 40 }).map((_, i) => (
+<span key={i}>✨</span>
+))}
+</div>
+)}
+
 {/* HEADER */}
 <header
 style={{
@@ -124,32 +140,62 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 
 {/* BODY */}
 <section className="grid">
-{/* LEFT COLUMN — ADS */}
 <aside className="ads">
 <AdFrame startIndex={0} />
 <AdFrame startIndex={1} />
 <AdFrame startIndex={2} />
 </aside>
 
-{/* RIGHT COLUMN — JUNGLE THREAD */}
 <section className="jungle">
 <h2>
 Politely dishing politics.
 <span className="rule-line">May the best mind win.</span>
 </h2>
 
-{/* SIGN-UP AT TOP */}
 <div className="signup">
 <input
 type="email"
 placeholder="Email for member sign-up"
-value={email} // ADDED
-onChange={(e) => setEmail(e.target.value)} // ADDED
+value={email}
+onChange={(e) => setEmail(e.target.value)}
 />
-<button onClick={handleJoin}>Join</button> {/* ADDED */}
+<button
+onClick={handleJoin}
+disabled={sending}
+style={{
+background: sent ? 'gold' : 'black',
+color: sent ? 'black' : 'white',
+border: '2px solid black',
+padding: '8px 12px',
+fontWeight: 600,
+cursor: sending ? 'default' : 'pointer',
+transition: 'all 0.3s ease',
+}}
+>
+{sent ? 'Check your email' : 'Join'}
+</button>
 </div>
 
-<p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
+{sent && (
+<div style={{ marginTop: 8, fontSize: 14 }}>
+A magic link has been sent. Check your email to confirm.
+</div>
+)}
+
+<textarea
+placeholder="Dish politely. May the best mind win."
+value={draft}
+onChange={(e) => setDraft(e.target.value)}
+style={{
+width: '100%',
+minHeight: 120,
+padding: 12,
+fontFamily: 'inherit',
+fontSize: 14,
+marginTop: 12,
+marginBottom: 12,
+}}
+/>
 
 <div className="divider">
 The Jungle Thread only grows and grows…
@@ -166,19 +212,13 @@ least 18 years of age.
 </section>
 </section>
 
-{/* FOOTER */}
 <footer className="footer">
 <div>
-Polidish LLC is not legally responsible for your poor judgment. If you
-endanger children, threaten terrorism, or break the law, you reveal
-yourself. Two factor authentication. It’s a troll-free freedom fest.
+Polidish LLC is not legally responsible for your poor judgment.
 </div>
-<div>
-© 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1
-</div>
+<div>© 2025 Polidish LLC. All rights reserved.</div>
 </footer>
 
-{/* STYLES */}
 <style jsx>{`
 .grid {
 display: grid;
@@ -199,11 +239,6 @@ padding: 24px;
 display: flex;
 flex-direction: column;
 background: white;
-}
-
-.rule-line {
-display: inline;
-margin-left: 6px;
 }
 
 .signup {
@@ -228,56 +263,35 @@ text-align: center;
 .scroll {
 border: 1px solid #ddd;
 padding: 12px;
-min-height: 260px;
+flex: 1;
 overflow-y: auto;
 }
 
-.enter {
-font-style: italic;
-}
-
-.age {
-font-size: 12px;
-margin-top: 12px;
-}
-
 .footer {
-width: 100%;
-display: flex;
-justify-content: space-between;
-gap: 16px;
 padding: 16px 24px;
 font-size: 12px;
 border-top: 2px solid black;
-background: white;
-box-sizing: border-box;
 }
 
-/* MOBILE ONLY */
-@media (max-width: 768px) {
-.grid {
-grid-template-columns: 1fr;
+.confetti {
+position: fixed;
+inset: 0;
+pointer-events: none;
+z-index: 9999;
 }
 
-.ads {
-order: 2;
+.confetti span {
+position: absolute;
+top: -10px;
+left: calc(100% * var(--x));
+animation: fall 1.5s linear forwards;
+font-size: 18px;
 }
 
-.jungle {
-order: 1;
-}
-
-.rule-line {
-display: block;
-margin-left: 0;
-}
-
-.scroll {
-min-height: 360px;
-}
-
-.footer {
-flex-direction: column;
+@keyframes fall {
+to {
+transform: translateY(110vh) rotate(360deg);
+opacity: 0;
 }
 }
 `}</style>
