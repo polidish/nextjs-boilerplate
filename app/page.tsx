@@ -48,8 +48,8 @@ return (
 <Image
 src={ADS[index].src}
 alt="Advertisement"
-width={300}
-height={450}
+width={600}
+height={900}
 style={{ width: '100%', height: 'auto' }}
 />
 <div
@@ -77,14 +77,12 @@ return (
 <header
 style={{
 background: 'black',
-color: 'white',
 padding: '12px 24px',
 display: 'flex',
 alignItems: 'center',
 justifyContent: 'space-between',
 }}
 >
-{/* Crisp logo: higher intrinsic resolution, same visual size */}
 <Image
 src="/_logo polidish.png"
 alt="Polidish"
@@ -109,7 +107,7 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 
 {/* BODY */}
 <section className="grid">
-{/* LEFT COLUMN — THREE ADS */}
+{/* LEFT COLUMN — ADS */}
 <aside className="ads">
 <AdFrame startIndex={0} />
 <AdFrame startIndex={1} />
@@ -118,70 +116,50 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 
 {/* RIGHT COLUMN — JUNGLE THREAD */}
 <section className="jungle">
-{/* Top, flush-left */}
-<h2 style={{ marginBottom: 8 }}>
-Politely dishing politics. May the best mind win.
+<h2>
+Politely dishing politics.
+<span className="rule-line">May the best mind win.</span>
 </h2>
 
-{/* Sign-up at TOP for functionality */}
-<div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+{/* SIGN-UP AT TOP */}
+<div className="signup">
 <input
 type="email"
 placeholder="Email for member sign-up"
-style={{ flex: 1, padding: 8 }}
 />
-<button style={{ padding: '8px 16px' }}>Join</button>
+<button>Join</button>
 </div>
 
-<p style={{ marginBottom: 12 }}>
-Freedom is deliberate. Welcome to the Jungle Thread.
-</p>
+<p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
 
-{/* Divider */}
-<div
-style={{
-margin: '12px 0',
-padding: '8px 0',
-borderTop: '1px solid #bbb',
-borderBottom: '1px solid #bbb',
-textAlign: 'center',
-}}
->
+<div className="divider">
 The Jungle Thread only grows and grows…
 </div>
 
-{/* Scroll */}
-<div
-style={{
-flex: 1,
-border: '1px solid #ddd',
-padding: 8,
-overflowY: 'auto',
-}}
->
-<div style={{ fontStyle: 'italic' }}>Enter</div>
+<div className="scroll">
+<div className="enter">Enter</div>
 </div>
 
-<p style={{ fontSize: 12, marginTop: 12 }}>
+<p className="age">
 18+ only. By visiting or joining Polidish, you affirm that you are at
 least 18 years of age.
 </p>
 </section>
 </section>
 
-{/* FOOTER — full width, single row */}
+{/* FOOTER */}
 <footer className="footer">
-<div className="footer-left">
+<div>
 Polidish LLC is not legally responsible for your poor judgment. If you
 endanger children, threaten terrorism, or break the law, you reveal
 yourself. Two factor authentication. It’s a troll-free freedom fest.
 </div>
-<div className="footer-right">
+<div>
 © 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1
 </div>
 </footer>
 
-{/* Styles (desktop locked; mobile stacking only) */}
+{/* STYLES */}
 <style jsx>{`
 .grid {
 display: grid;
@@ -189,57 +167,101 @@ grid-template-columns: 320px 1fr;
 gap: 24px;
 padding: 24px;
 }
+
 .ads {
 display: flex;
 flex-direction: column;
 gap: 16px;
 }
+
 .jungle {
 border: 3px solid black;
 padding: 24px;
-background: white;
 display: flex;
 flex-direction: column;
-min-height: 100%;
+background: white;
 }
+
+.rule-line {
+display: inline;
+margin-left: 6px;
+}
+
+.signup {
+display: flex;
+gap: 8px;
+margin: 12px 0;
+}
+
+.signup input {
+flex: 1;
+padding: 8px;
+}
+
+.divider {
+margin: 12px 0;
+padding: 8px 0;
+border-top: 1px solid #bbb;
+border-bottom: 1px solid #bbb;
+text-align: center;
+}
+
+.scroll {
+border: 1px solid #ddd;
+padding: 12px;
+min-height: 260px;
+overflow-y: auto;
+}
+
+.enter {
+font-style: italic;
+}
+
+.age {
+font-size: 12px;
+margin-top: 12px;
+}
+
 .footer {
 width: 100%;
 display: flex;
 justify-content: space-between;
-align-items: flex-start;
 gap: 16px;
 padding: 16px 24px;
 font-size: 12px;
 border-top: 2px solid black;
 background: white;
-color: black;
 box-sizing: border-box;
 }
-.footer-left {
-flex: 1;
-}
-.footer-right {
-white-space: nowrap;
-}
 
-/* MOBILE — stack only */
+/* MOBILE ONLY */
 @media (max-width: 768px) {
 .grid {
 grid-template-columns: 1fr;
 }
+
 .ads {
-order: 2; /* ads below jungle on mobile */
+order: 2;
 }
+
 .jungle {
 order: 1;
 }
+
+.rule-line {
+display: block;
+margin-left: 0;
+}
+
+.scroll {
+min-height: 360px;
+}
+
 .footer {
-flex-direction: row; /* stay single row */
+flex-direction: column;
 }
 }
 `}</style>
 </main>
 );
 }
-
-
