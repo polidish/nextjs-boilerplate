@@ -81,10 +81,9 @@ color: 'white',
 padding: '12px 24px',
 display: 'flex',
 alignItems: 'center',
-justifyContent: 'space-between',
+gap: 16,
 }}
 >
-{/* 🔧 LOGO — SHARP FIX (ONLY CHANGE) */}
 <Image
 src="/_logo polidish.png"
 alt="Polidish"
@@ -93,7 +92,6 @@ height={96}
 style={{ width: 48, height: 48 }}
 priority
 />
-
 <div
 style={{
 color: '#d07a3a',
@@ -115,16 +113,18 @@ gridTemplateColumns: '320px 1fr',
 gap: 24,
 padding: 24,
 }}
+className="layout"
 >
-{/* LEFT COLUMN — THREE ADS */}
-<aside style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+{/* LEFT COLUMN — ADS */}
+<aside className="ads">
 <AdFrame startIndex={0} />
 <AdFrame startIndex={1} />
 <AdFrame startIndex={2} />
 </aside>
 
-{/* RIGHT COLUMN — JUNGLE THREAD */}
+{/* JUNGLE THREAD */}
 <section
+className="thread"
 style={{
 border: '3px solid black',
 padding: 24,
@@ -133,10 +133,19 @@ display: 'flex',
 flexDirection: 'column',
 }}
 >
+{/* MOBILE SIGN-UP FIRST */}
+<div className="mobile-signup">
+<input
+type="email"
+placeholder="Email for member sign-up"
+style={{ flex: 1, padding: 8 }}
+/>
+<button style={{ padding: '8px 16px' }}>Join</button>
+</div>
+
 <h2>Politely dishing politics. May the best mind win.</h2>
 <p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
 
-{/* Gray divider */}
 <div
 style={{
 margin: '12px 0',
@@ -149,20 +158,19 @@ textAlign: 'center',
 The Jungle Thread only grows and grows…
 </div>
 
-{/* Scroll */}
 <div
 style={{
 flex: 1,
 border: '1px solid #ddd',
-padding: 8,
-overflowY: 'auto',
+padding: 12,
+minHeight: 200,
 }}
 >
 <div style={{ fontStyle: 'italic' }}>Enter</div>
 </div>
 
-{/* Sign-up */}
-<div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+{/* DESKTOP SIGN-UP */}
+<div className="desktop-signup">
 <input
 type="email"
 placeholder="Email for member sign-up"
@@ -181,22 +189,71 @@ least 18 years of age.
 {/* FOOTER */}
 <footer
 style={{
+width: '100vw',
 background: 'white',
 color: 'black',
-padding: '12px 24px',
+padding: '16px 24px',
 fontSize: 12,
+borderTop: '2px solid black',
 display: 'flex',
 justifyContent: 'space-between',
-borderTop: '2px solid black',
+gap: 24,
 }}
 >
-<div>
+<div style={{ maxWidth: 600 }}>
 Polidish LLC is not legally responsible for your poor judgment. If you
 endanger children, threaten terrorism, or break the law, you reveal
 yourself. Two factor authentication. It’s a troll-free freedom fest.
 </div>
-<div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1</div>
+<div style={{ textAlign: 'right' }}>
+© 2025 Polidish LLC. All rights reserved.
+<br />— 127 Minds Day 1
+</div>
 </footer>
+
+{/* RESPONSIVE RULES */}
+<style jsx>{`
+.ads {
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+
+.mobile-signup {
+display: none;
+gap: 8px;
+margin-bottom: 16px;
+}
+
+.desktop-signup {
+display: flex;
+gap: 8px;
+margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+.layout {
+grid-template-columns: 1fr;
+}
+
+.ads {
+order: 2;
+}
+
+.thread {
+order: 1;
+width: 100%;
+}
+
+.mobile-signup {
+display: flex;
+}
+
+.desktop-signup {
+display: none;
+}
+}
+`}</style>
 </main>
 );
 }
