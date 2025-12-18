@@ -1,303 +1,308 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { supabase } from './lib/supabaseClient';
+import React, { useEffect, useMemo, useState } from 'react';
+import { createClient, type User } from '@supabase/supabase-js';
 
-const ADS = [
-{
-src: '/pier.jpeg',
-caption: 'Visualize your ad right here, to the left, or in the center.',
-duration: 15000,
-},
-{
-src: '/decanter.jpeg',
-caption: 'Advertisements are absolutely uncurated for your privacy.',
-duration: 30000,
-},
-{
-src: '/peacock.jpeg',
-caption:
-'Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
-duration: 60000,
-},
-];
+// -----------------------------
+// Supabase client (in-file, no extra files)
+// Requires env vars:
+// NEXT_PUBLIC_SUPABASE_URL
+// NEXT_PUBLIC_SUPABASE_ANON_KEY
+// -----------------------------
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-function AdFrame({ startIndex }: { startIndex: number }) {
-const [index, setIndex] = useState(startIndex);
-const [visible, setVisible] = useState(true);
+const supabase =
+supabaseUrl && supabaseAnonKey
+? createClient(supabaseUrl, supabaseAnonKey)
+: null;
 
-useEffect(() => {
-const hold = ADS[index].duration;
-const transition = 15000;
-
-const t1 = setTimeout(() => setVisible(false), hold);
-const t2 = setTimeout(() => {
-setIndex((i) => (i + 1) % ADS.length);
-setVisible(true);
-}, hold + transition);
-
-return () => {
-clearTimeout(t1);
-clearTimeout(t2);
+// -----------------------------
+// Assumed table + columns
+// Table: public.vines
+// Columns used: id, created_at, author_id, content
+// -----------------------------
+type Vine = {
+id: string;
+created_at: string;
+author_id: string | null;
+content: string;
 };
-}, [index]);
 
-return (
-<div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
-<div style={{ opacity: visible ? 1 : 0, transition: 'opacity 15s linear' }}>
-<Image
-src={ADS[index].src}
-alt="Advertisement"
-width={600}
-height={900}
-style={{ width: '100%', height: 'auto' }}
-/>
-<div
-style={{
-position: 'absolute',
-bottom: 16,
-left: 16,
-right: 16,
-color: 'gold',
-fontStyle: 'italic',
-fontSize: 14,
-}}
->
-{ADS[index].caption}
-</div>
-</div>
-</div>
-);
+const BURNT_ORANGE = '#CC5500'; // restrained burnt orange
+
+export default function HomePage() {
+const [user, setUser] = useState<User | null>(null);
+const [vines, setVines] = useState<Vine[]>([]);
+const [draft, setDraft] = useState<string>('');
+const [loading, setLoading] = useState<boolean>(true);
+const [posting, setPosting] = useState<boolean>(false);
+const [error, setError] = useState<string>('');
+
+const newestVineId = useMemo(() => {
+if (vines.length === 0) return null;
+return vines[vines.length - 1]?.id ?? null; // bottom-down chronology
+}, [vines]);
+
+const lastVineAuthorId = useMemo(() => {
+if (vines.length === 0) return null;
+return vines[vines.length - 1]?.author_id ?? null;
+}, [vines]);
+
+const canPost = useMemo(() => {
+if (!user) return false;
+if (!draft.trim()) return false;
+// One-pass / turn-taking: no consecutive vines by same author
+if (lastVineAuthorId && lastVineAuthorId === user.id) return false;
+return true;
+}, [user, draft, lastVineAuthorId]);
+
+async function loadAuthAndVines() {
+setError('');
+setLoading(true);
+
+try {
+if (!supabase) {
+setError('Supabase env vars missing: NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY.');
+setLoading(false);
+return;
 }
 
-export default function Page() {
-const [email, setEmail] = useState('');
-const [sent, setSent] = useState(false);
+const { data: userRes } = await supabase.auth.getUser();
+setUser(userRes?.user ?? null);
+
+const { data, error: vinesErr } = await supabase
+.from('vines')
+.select('id, created_at, author_id, content')
+.order('created_at', { ascending: true });
+
+if (vinesErr) throw vinesErr;
+
+setVines((data as Vine[]) ?? []);
+} catch (e: any) {
+setError(e?.message || 'Unknown error loading vines.');
+} finally {
+setLoading(false);
+}
+}
 
 useEffect(() => {
-supabase.auth.getSession();
-}, []);
+// Initial load
+loadAuthAndVines();
 
-const handleJoin = async () => {
-const { error } = await supabase.auth.signInWithOtp({
-email,
-options: {
-emailRedirectTo: 'https://polidish.com',
-},
+if (!supabase) return;
+
+// Keep auth state updated
+const { data: authSub } = supabase.auth.onAuthStateChange((_event, session) => {
+setUser(session?.user ?? null);
 });
 
-if (!error) setSent(true);
+// Realtime subscription for new vines + deletes
+const channel = supabase
+.channel('vines-realtime')
+.on(
+'postgres_changes',
+{ event: 'INSERT', schema: 'public', table: 'vines' },
+async () => {
+// reload list to preserve strict ordering and newest styling
+await loadAuthAndVines();
+}
+)
+.on(
+'postgres_changes',
+{ event: 'DELETE', schema: 'public', table: 'vines' },
+async () => {
+await loadAuthAndVines();
+}
+)
+.subscribe();
+
+return () => {
+authSub?.subscription?.unsubscribe();
+supabase.removeChannel(channel);
 };
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
+async function postVine() {
+if (!supabase) return;
+if (!user) {
+setError('You must be signed in to post.');
+return;
+}
+if (!canPost) return;
+
+setPosting(true);
+setError('');
+
+try {
+const content = draft.trim();
+
+const { error: insErr } = await supabase.from('vines').insert([
+{
+content,
+author_id: user.id,
+},
+]);
+
+if (insErr) throw insErr;
+
+setDraft('');
+// Realtime should refresh; also safe to reload now.
+await loadAuthAndVines();
+} catch (e: any) {
+setError(e?.message || 'Post failed.');
+} finally {
+setPosting(false);
+}
+}
+
+async function deleteVine(vineId: string) {
+if (!supabase) return;
+if (!user) return;
+
+setError('');
+
+try {
+const { error: delErr } = await supabase
+.from('vines')
+.delete()
+.eq('id', vineId)
+.eq('author_id', user.id);
+
+if (delErr) throw delErr;
+
+await loadAuthAndVines();
+} catch (e: any) {
+setError(e?.message || 'Delete failed.');
+}
+}
 
 return (
-<main style={{ fontFamily: 'serif' }}>
-{/* HEADER */}
-<header
+<main style={{ padding: '16px', maxWidth: 980, margin: '0 auto' }}>
+{/* Minimal status (no ceremony) */}
+{error ? (
+<div style={{ marginBottom: 12, padding: 10, border: '1px solid #000', color: '#000' }}>
+{error}
+</div>
+) : null}
+
+{/* Jungle container (thin inner box extends to bottom by design) */}
+<section
 style={{
-background: 'black',
-padding: '12px 24px',
+border: '1px solid #000',
+padding: 12,
+minHeight: 520,
 display: 'flex',
-alignItems: 'center',
-justifyContent: 'space-between',
+flexDirection: 'column',
+gap: 12,
 }}
 >
-<Image
-src="/_logo polidish.png"
-alt="Polidish"
-width={96}
-height={96}
-style={{ width: 48, height: 48 }}
-priority
-/>
-
+{/* Compose area */}
 <div
 style={{
-color: '#d07a3a',
-fontSize: 'clamp(14px, 1.6vw, 20px)',
-letterSpacing: '0.05em',
-textTransform: 'uppercase',
-fontWeight: 600,
+border: '1px solid #000',
+padding: 10,
 }}
 >
-THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
+<div style={{ marginBottom: 8 }}>
+{/* Instructional copy only; no rules, no ceremony */}
+Member opinions will appear here.
 </div>
-</header>
 
-{/* BODY */}
-<section className="grid">
-<aside className="ads">
-<AdFrame startIndex={0} />
-<AdFrame startIndex={1} />
-<AdFrame startIndex={2} />
-</aside>
-
-<section className="jungle">
-<h2>
-Politely dishing politics.
-<span className="rule-line">May the best mind win.</span>
-</h2>
-
-{/* SIGN-UP */}
-<div className="signup">
-<input
-type="email"
-placeholder="Email for member sign-up"
-value={email}
-onChange={(e) => setEmail(e.target.value)}
-/>
-<button
-onClick={handleJoin}
+<textarea
+value={draft}
+onChange={(e) => setDraft(e.target.value)}
+placeholder="Members who clicked the magic link compose here."
+rows={4}
 style={{
-background: sent ? 'gold' : 'black',
-color: sent ? 'black' : 'white',
-border: '2px solid black',
+width: '100%',
+border: '1px solid #000',
+padding: 10,
+resize: 'vertical',
+font: 'inherit',
+color: '#000',
+}}
+disabled={!user || posting}
+/>
+
+<div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
+<button
+onClick={postVine}
+disabled={!canPost || posting}
+style={{
+border: '1px solid #000',
 padding: '8px 12px',
-fontWeight: 600,
+background: 'transparent',
+cursor: canPost && !posting ? 'pointer' : 'not-allowed',
 }}
 >
-Join
+{posting ? 'Posting…' : 'Post vine'}
 </button>
+
+{!user ? (
+<span style={{ color: '#000' }}>Sign in required to post.</span>
+) : lastVineAuthorId === user.id ? (
+<span style={{ color: '#000' }}>Turn-taking: wait for another member to post.</span>
+) : null}
+</div>
 </div>
 
-{sent && (
-<div style={{ marginTop: 6 }}>
-An email has been sent with a magic link.
+{/* Thread area (oldest -> newest; newest at bottom, in burnt orange) */}
+<div
+style={{
+border: '1px solid #000',
+padding: 10,
+flex: 1,
+overflow: 'auto',
+}}
+>
+{loading ? (
+<div>Loading…</div>
+) : vines.length === 0 ? (
+<div>The lion sleeps tonight.</div>
+) : (
+<ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+{vines.map((v) => {
+const isNewest = newestVineId === v.id;
+const isAuthor = user && v.author_id === user.id;
+
+return (
+<li key={v.id} style={{ borderBottom: '1px solid #000', paddingBottom: 10 }}>
+<div style={{ whiteSpace: 'pre-wrap', color: isNewest ? BURNT_ORANGE : '#000' }}>
+{v.content}
 </div>
+
+<div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
+<span style={{ fontSize: 12, color: '#000' }}>
+{new Date(v.created_at).toLocaleString()}
+</span>
+
+{/* Author-only delete; no edits */}
+{isAuthor ? (
+<button
+onClick={() => deleteVine(v.id)}
+style={{
+border: '1px solid #000',
+padding: '4px 8px',
+background: 'transparent',
+cursor: 'pointer',
+fontSize: 12,
+}}
+>
+Delete
+</button>
+) : null}
+</div>
+</li>
+);
+})}
+</ul>
 )}
-
-<p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
-
-<div className="divider">
-Jungle posting for verified members is coming soon.
 </div>
-
-<div className="scroll">
-<div className="enter">Member opinions will appear here.</div>
-</div>
-
-<p className="age">
-18+ only. By visiting or joining Polidish, you affirm that you are at
-least 18 years of age.
-</p>
 </section>
-</section>
-
-{/* FOOTER */}
-<footer className="footer">
-<div>
-Polidish LLC is not legally responsible for your poor judgment. If you
-endanger children, threaten terrorism, or break the law, you reveal
-yourself. Two factor authentication. It’s a troll-free freedom fest.
-</div>
-<div>
-© 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1
-</div>
-</footer>
-
-{/* STYLES */}
-<style jsx>{`
-.grid {
-display: grid;
-grid-template-columns: 320px 1fr;
-gap: 24px;
-padding: 24px;
-}
-
-.ads {
-display: flex;
-flex-direction: column;
-gap: 16px;
-}
-
-.jungle {
-border: 3px solid black;
-padding: 24px;
-display: flex;
-flex-direction: column;
-background: white;
-}
-
-.rule-line {
-display: inline;
-margin-left: 6px;
-}
-
-.signup {
-display: flex;
-gap: 8px;
-margin: 12px 0;
-}
-
-.signup input {
-flex: 1;
-padding: 8px;
-}
-
-.divider {
-margin: 12px 0;
-padding: 8px 0;
-border-top: 1px solid #bbb;
-border-bottom: 1px solid #bbb;
-text-align: center;
-}
-
-.scroll {
-border: 1px solid #ddd;
-padding: 12px;
-min-height: 260px;
-overflow-y: auto;
-}
-
-.enter {
-font-style: italic;
-}
-
-.age {
-font-size: 12px;
-margin-top: 12px;
-}
-
-.footer {
-width: 100%;
-display: flex;
-justify-content: space-between;
-gap: 16px;
-padding: 16px 24px;
-font-size: 12px;
-border-top: 2px solid black;
-background: white;
-box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
-.grid {
-grid-template-columns: 1fr;
-}
-
-.ads {
-order: 2;
-}
-
-.jungle {
-order: 1;
-}
-
-.rule-line {
-display: block;
-margin-left: 0;
-}
-
-.scroll {
-min-height: 360px;
-}
-
-.footer {
-flex-direction: column;
-}
-}
-`}</style>
 </main>
 );
 }
+
 
