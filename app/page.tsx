@@ -21,11 +21,13 @@ const [vines, setVines] = useState<Vine[]>([])
 const [loading, setLoading] = useState(true)
 
 useEffect(() => {
+// Initial session check
 supabase.auth.getSession().then(({ data }) => {
 setSession(data.session)
 setLoading(false)
 })
 
+// Reactive auth listener (critical fix)
 const {
 data: { subscription },
 } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -66,32 +68,34 @@ return <p style={{ padding: 40 }}>Loading…</p>
 
 return (
 <main style={{ maxWidth: 900, margin: '40px auto', fontFamily: 'serif' }}>
+{/* HERO */}
 <section style={{ marginBottom: 40 }}>
 <h1 style={{ fontSize: 42 }}>Polidish</h1>
 <p><em>You are cordially invited to the Polidish venue.</em></p>
 <p><strong>Freedom is deliberate.</strong></p>
 </section>
 
-<section
-style={{
-backgroundColor: '#0A1A14',
-color: '#EAEAEA',
-padding: '24px',
-borderRadius: '4px',
-marginTop: '32px',
-}}
->
+{/* RULES */}
+<section style={{ marginBottom: 40 }}>
+<p>
+This is a text-only venue. Speak plainly. Read carefully.
+May the best mind win.
+</p>
+</section>
+
+{/* JUNGLE THREAD */}
+<section style={{ borderTop: '1px solid #000', paddingTop: 24 }}>
 <h2>Jungle Thread</h2>
 
 {!session && (
-<p style={{ opacity: 0.8 }}>
+<p style={{ opacity: 0.7 }}>
 Sign in required to post.
 </p>
 )}
 
 {session && (
-<p>
-<strong>You</strong> are verified. Discuss <em>your</em> political opinions here.
+<p style={{ marginTop: 8, opacity: 0.85 }}>
+Voilà. The venue invites your vine.
 </p>
 )}
 
@@ -102,30 +106,26 @@ placeholder={session ? 'Dish politely…' : 'Sign in to post'}
 disabled={!session}
 style={{
 width: '100%',
-height: '120px',
-marginTop: '12px',
-padding: '12px',
-fontSize: '16px',
-backgroundColor: '#0F2A1D',
-color: '#EAEAEA',
-border: '1px solid #333',
-borderRadius: '4px',
+height: 120,
+padding: 12,
+fontSize: 16,
+marginTop: 12,
 }}
 />
 
 <button
 onClick={postVine}
 disabled={!session || !vine.trim()}
-style={{ marginTop: '12px' }}
+style={{ marginTop: 12 }}
 >
 Post
 </button>
 
-<div style={{ marginTop: '32px' }}>
+<div style={{ marginTop: 40 }}>
 {vines.map((v) => (
-<div key={v.id} style={{ marginBottom: '24px' }}>
+<div key={v.id} style={{ marginBottom: 24 }}>
 <p>{v.content}</p>
-<small style={{ color: '#B5B5B5' }}>
+<small style={{ opacity: 0.6 }}>
 {new Date(v.created_at).toLocaleString()}
 </small>
 </div>
@@ -135,5 +135,3 @@ Post
 </main>
 )
 }
-
-
