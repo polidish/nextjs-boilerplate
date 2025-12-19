@@ -83,29 +83,13 @@ const user = useUser();
 
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
-
-// Keep this for messaging only (NOT for gating writes).
-const [verified, setVerified] = useState(false);
-
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
 
 useEffect(() => {
-// Set initial verification state
-supabase.auth.getSession().then(({ data }) => {
-setVerified(!!data.session);
-});
-
-// Keep verification state current (does NOT gate textarea visibility)
-const { data: authSub } = supabase.auth.onAuthStateChange((_event, session) => {
-setVerified(!!session);
-});
-
-// Load existing vines
 loadVines();
 
-// Realtime updates for new posts
 const channel = supabase
 .channel('vines-realtime')
 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'vines' }, () => {
@@ -114,10 +98,8 @@ loadVines();
 .subscribe();
 
 return () => {
-authSub?.subscription?.unsubscribe();
 supabase.removeChannel(channel);
 };
-// eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
 async function loadVines() {
@@ -132,16 +114,13 @@ if (data) setVines(data as Vine[]);
 const handleJoin = async () => {
 const { error } = await supabase.auth.signInWithOtp({
 email,
-options: {
-emailRedirectTo: 'https://polidish.com',
-},
+options: { emailRedirectTo: 'https://polidish.com' },
 });
 
 if (!error) setSent(true);
 };
 
 async function postVine() {
-// Gate on stable user id (NOT on session/verified)
 if (!user?.id) return;
 
 const text = draft.trim();
@@ -149,16 +128,10 @@ if (!text) return;
 
 setPosting(true);
 try {
-const { error } = await supabase.from('vines').insert({
+await supabase.from('vines').insert({
 content: text,
 author_id: user.id,
 });
-
-if (error) {
-// Keep UI usable even on error (no hard lock)
-console.error('Insert error:', error);
-return;
-}
 
 setDraft('');
 await loadVines();
@@ -169,7 +142,6 @@ setPosting(false);
 
 return (
 <main style={{ fontFamily: 'serif' }}>
-{/* HEADER */}
 <header
 style={{
 background: 'black',
@@ -187,7 +159,6 @@ height={96}
 style={{ width: 48, height: 48 }}
 priority
 />
-
 <div
 style={{
 color: '#d07a3a',
@@ -201,7 +172,6 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
-{/* BODY */}
 <section className="grid">
 <aside className="ads">
 <AdFrame startIndex={0} />
@@ -215,7 +185,6 @@ Politely dishing politics.
 <span className="rule-line">May the best mind win.</span>
 </h2>
 
-{/* SIGN-UP */}
 <div className="signup">
 <input
 type="email"
@@ -223,73 +192,65 @@ placeholder="Email for member sign-up"
 value={email}
 onChange={(e) => setEmail(e.target.value)}
 />
-<button
-onClick={handleJoin}
-style={{
-background: sent ? 'gold' : 'black',
-color: sent ? 'black' : 'white',
-border: '2px solid black',
-padding: '8px 12px',
-fontWeight: 600,
-}}
->
-Join
-</button>
+<button onClick={handleJoin}>Join</button>
 </div>
 
-{sent && <div style={{ marginTop: 6 }}>An email has been sent with a magic link.</div>}
+{sent && <div>An email has been sent with a magic link.</div>}
 
 <p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
 
-<div className="divider">Jungle posting for verified members is coming soon.</div>
-
-{/* JUNGLE THREAD BOX */}
 <div className="scroll">
-{/* Verified message: ONLY visible to verified members */}
-{verified && (
-<div style={{ marginBottom: 10 }}>
-<strong>YOU</strong> are verified. Post political discourse here.
-</div>
-)}
-
-{/* Write box: ALWAYS visible (not gated/hidden) */}
 <textarea
 value={draft}
 onChange={(e) => setDraft(e.target.value)}
 rows={4}
 placeholder={user?.id ? '' : 'Join via magic link to post.'}
-style={{
-width: '100%',
-border: '1px solid #000',
-padding: 10,
-resize: 'vertical',
-font: 'inherit',
-marginBottom: 10,
-}}
 />
 
 <button
 onClick={postVine}
 disabled={!user?.id || posting || !draft.trim()}
-style={{
-background: 'transparent',
-color: 'black',
-border: '2px solid black',
-padding: '8px 12px',
-fontWeight: 600,
-marginBottom: 14,
-cursor: !user?.id || posting || !draft.trim() ? 'not-allowed' : 'pointer',
-}}
 >
 Post
 </button>
 
-{/* Thread */}
 {vines.length === 0 ? (
-<div style={{ fontStyle: 'italic' }}>The lion sleeps tonight.</div>
+<div>The lion sleeps tonight.</div>
 ) : (
-vines.map((v) => (
-<div key={v.id} style={{ marginBottom: 12 }}>
-{v.content}
+vines.map((v) => <div key={v.id}>{v.content}</div>)
+)}
+</div>
+</section>
+</section>
 
-
+<style jsx>{`
+.grid {
+display: grid;
+grid-template-columns: 320px 1fr;
+gap: 24px;
+padding: 24px;
+}
+.ads {
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+.jungle {
+border: 3px solid black;
+padding: 24px;
+display: flex;
+flex-direction: column;
+}
+.scroll {
+border: 1px solid #ddd;
+padding: 12px;
+overflow-y: auto;
+}
+textarea {
+width: 100%;
+margin-bottom: 10px;
+}
+`}</style>
+</main>
+);
+}
