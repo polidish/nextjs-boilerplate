@@ -1,11 +1,10 @@
 'use client';
 
-import { useUser } from '@supabase/auth-helpers-react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { supabase } from './lib/supabaseClient';
+import { useUser } from '@supabase/auth-helpers-react';
 
-const user = useUser();
 const ADS = [
 {
 src: '/pier.jpeg',
@@ -80,10 +79,12 @@ created_at: string;
 };
 
 export default function Page() {
+const user = useUser();
+
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
 
-// IMPORTANT: textarea is always visible. Verified only controls message + posting enable.
+// Keep this for messaging only (NOT for gating writes).
 const [verified, setVerified] = useState(false);
 
 const [draft, setDraft] = useState('');
@@ -140,20 +141,26 @@ if (!error) setSent(true);
 };
 
 async function postVine() {
-if (!verified) return;
+// Gate on stable user id (NOT on session/verified)
+if (!user?.id) return;
+
 const text = draft.trim();
 if (!text) return;
 
 setPosting(true);
 try {
-if (!user?.id) return;
-
-await supabase.from('vines').insert({
-content,
+const { error } = await supabase.from('vines').insert({
+content: text,
 author_id: user.id,
 });
+
+if (error) {
+// Keep UI usable even on error (no hard lock)
+console.error('Insert error:', error);
+return;
+}
+
 setDraft('');
-// Load immediately; realtime also updates
 await loadVines();
 } finally {
 setPosting(false);
@@ -250,7 +257,7 @@ Join
 value={draft}
 onChange={(e) => setDraft(e.target.value)}
 rows={4}
-placeholder={verified ? '' : 'Join via magic link to post.'}
+placeholder={user?.id ? '' : 'Join via magic link to post.'}
 style={{
 width: '100%',
 border: '1px solid #000',
@@ -262,7 +269,8 @@ marginBottom: 10,
 />
 
 <button
-onClick={postVine}disabled={!user?.id}
+onClick={postVine}
+disabled={!user?.id || posting || !draft.trim()}
 style={{
 background: 'transparent',
 color: 'black',
@@ -270,7 +278,7 @@ border: '2px solid black',
 padding: '8px 12px',
 fontWeight: 600,
 marginBottom: 14,
-cursor: !verified || posting || !draft.trim() ? 'not-allowed' : 'pointer',
+cursor: !user?.id || posting || !draft.trim() ? 'not-allowed' : 'pointer',
 }}
 >
 Post
@@ -283,138 +291,5 @@ Post
 vines.map((v) => (
 <div key={v.id} style={{ marginBottom: 12 }}>
 {v.content}
-</div>
-))
-)}
-</div>
 
-<p className="age">
-18+ only. By visiting or joining Polidish, you affirm that you are at least 18 years of
-age.
-</p>
-</section>
-</section>
-
-{/* FOOTER */}
-<footer className="footer">
-<div>
-Polidish LLC is not legally responsible for your poor judgment. If you endanger children,
-threaten terrorism, or break the law, you reveal yourself. Two factor authentication. It’s
-a troll-free freedom fest.
-</div>
-<div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day 1</div>
-</footer>
-
-{/* STYLES */}
-<style jsx>{`
-.grid {
-display: grid;
-grid-template-columns: 320px 1fr;
-gap: 24px;
-padding: 24px;
-/* Key containment */
-min-height: calc(100vh - 140px);
-}
-
-.ads {
-display: flex;
-flex-direction: column;
-gap: 16px;
-}
-
-.jungle {
-border: 3px solid black;
-padding: 24px;
-display: flex;
-flex-direction: column;
-background: white;
-/* Key containment */
-min-height: 0;
-}
-
-.rule-line {
-display: inline;
-margin-left: 6px;
-}
-
-.signup {
-display: flex;
-gap: 8px;
-margin: 12px 0;
-}
-
-.signup input {
-flex: 1;
-padding: 8px;
-}
-
-.divider {
-margin: 12px 0;
-padding: 8px 0;
-border-top: 1px solid #bbb;
-border-bottom: 1px solid #bbb;
-text-align: center;
-}
-
-.scroll {
-border: 1px solid #ddd;
-padding: 12px;
-flex: 1;
-overflow-y: auto;
-min-height: 0;
-}
-
-.enter {
-font-style: italic;
-}
-
-.age {
-font-size: 12px;
-margin-top: 12px;
-}
-
-.footer {
-width: 100%;
-display: flex;
-justify-content: space-between;
-gap: 16px;
-padding: 16px 24px;
-font-size: 12px;
-border-top: 2px solid black;
-background: white;
-box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
-.grid {
-grid-template-columns: 1fr;
-min-height: auto;
-}
-
-.ads {
-order: 2;
-}
-
-.jungle {
-order: 1;
-}
-
-.rule-line {
-display: block;
-margin-left: 0;
-}
-
-/* Mobile: make jungle box usable (not 1cm tall) */
-.scroll {
-min-height: 70vh;
-}
-
-.footer {
-flex-direction: column;
-}
-}
-`}</style>
-</main>
-);
-}
 
