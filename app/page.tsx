@@ -71,6 +71,8 @@ sub?.subscription?.unsubscribe();
 /* ---- data ---- */
 useEffect(() => {
 loadVines();
+  setVines((prev) => [...prev, { id: crypto.randomUUID(), content: text, created_at: new Date().toISOString() }]);
+  
 
 const channel = supabase
 .channel('vines-realtime')
