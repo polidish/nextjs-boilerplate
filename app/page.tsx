@@ -1,9 +1,11 @@
-'use client';
+use client';
 
+import { useUser } from '@supabase/auth-helpers-react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { supabase } from './lib/supabaseClient';
 
+const user = useUser();
 const ADS = [
 {
 src: '/pier.jpeg',
@@ -144,7 +146,12 @@ if (!text) return;
 
 setPosting(true);
 try {
-await supabase.from('vines').insert({ content: text });
+if (!user?.id) return;
+
+await supabase.from('vines').insert({
+content,
+author_id: user.id,
+});
 setDraft('');
 // Load immediately; realtime also updates
 await loadVines();
@@ -255,8 +262,7 @@ marginBottom: 10,
 />
 
 <button
-onClick={postVine}
-disabled={!verified || posting || !draft.trim()}
+onClick={postVine}disabled={!user?.id}
 style={{
 background: 'transparent',
 color: 'black',
