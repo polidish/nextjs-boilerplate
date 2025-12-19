@@ -1,4 +1,5 @@
-use client';
+'use client';
+
 import { useUser } from '@supabase/auth-helpers-react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
