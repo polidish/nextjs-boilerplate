@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { supabase } from './lib/supabaseClient';
 
+/* ---------------- ADS ---------------- */
+
 const ADS = [
 { src: '/pier.jpeg', caption: 'Visualize your ad right here.', duration: 15000 },
 { src: '/decanter.jpeg', caption: 'Advertisements are absolutely uncurated.', duration: 30000 },
@@ -28,23 +30,30 @@ clearTimeout(t2);
 }, [index]);
 
 return (
-<div style={{ border: '3px solid black', padding: 8 }}>
+<div style={{ border: '3px solid black', padding: 8, position: 'relative' }}>
+<div style={{ opacity: visible ? 1 : 0, transition: 'opacity 15s linear' }}>
 <Image src={ADS[index].src} alt="Ad" width={600} height={900} />
 <div style={{ color: 'gold', fontStyle: 'italic' }}>{ADS[index].caption}</div>
 </div>
+</div>
 );
 }
+
+/* ---------------- PAGE ---------------- */
 
 type Vine = { id: string; content: string; created_at: string };
 
 export default function Page() {
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
+
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
+
 const [userId, setUserId] = useState<string | null>(null);
 
+/* ---- auth: capture user id once ---- */
 useEffect(() => {
 supabase.auth.getUser().then(({ data }) => {
 setUserId(data.user?.id ?? null);
@@ -54,15 +63,21 @@ const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
 setUserId(session?.user?.id ?? null);
 });
 
+return () => {
+sub?.subscription?.unsubscribe();
+};
+}, []);
+
+/* ---- data ---- */
+useEffect(() => {
 loadVines();
 
 const channel = supabase
-.channel('vines')
+.channel('vines-realtime')
 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'vines' }, loadVines)
 .subscribe();
 
 return () => {
-sub?.subscription?.unsubscribe();
 supabase.removeChannel(channel);
 };
 }, []);
@@ -72,9 +87,10 @@ const { data } = await supabase
 .from('vines')
 .select('id, content, created_at')
 .order('created_at', { ascending: true });
-if (data) setVines(data);
+if (data) setVines(data as Vine[]);
 }
 
+/* ---- actions ---- */
 async function handleJoin() {
 const { error } = await supabase.auth.signInWithOtp({
 email,
@@ -102,46 +118,90 @@ setPosting(false);
 }
 
 return (
-<main>
+<main style={{ fontFamily: 'serif' }}>
 <header style={{ background: 'black', color: '#d07a3a', padding: 12 }}>
 THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </header>
 
-<section style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24 }}>
-<aside>
+<section className="grid">
+<aside className="ads">
 <AdFrame startIndex={0} />
 <AdFrame startIndex={1} />
 <AdFrame startIndex={2} />
 </aside>
 
-<section style={{ border: '3px solid black', padding: 24 }}>
-<h2>Politely dishing politics. May the best mind win.</h2>
+<section className="jungle">
+<h2>
+Politely dishing politics. <span className="rule-line">May the best mind win.</span>
+</h2>
 
+<div className="signup">
 <input
 value={email}
 onChange={(e) => setEmail(e.target.value)}
 placeholder="Email for member sign-up"
 />
 <button onClick={handleJoin}>Join</button>
+</div>
+
 {sent && <div>Magic link sent.</div>}
 
+<div className="scroll">
 <textarea
 value={draft}
 onChange={(e) => setDraft(e.target.value)}
-placeholder={userId ? '' : 'Join via magic link to post'}
+rows={4}
+placeholder={userId ? '' : 'Join via magic link to post.'}
 />
 
-<button onClick={postVine} disabled={!userId || posting || !draft.trim()}>
+<button
+onClick={postVine}
+disabled={!userId || posting || !draft.trim()}
+>
 Post
 </button>
 
 {vines.length === 0 ? (
-<div>The lion sleeps tonight.</div>
+<div style={{ fontStyle: 'italic' }}>The lion sleeps tonight.</div>
 ) : (
 vines.map((v) => <div key={v.id}>{v.content}</div>)
 )}
+</div>
 </section>
 </section>
+
+<style jsx>{`
+.grid {
+display: grid;
+grid-template-columns: 320px 1fr;
+gap: 24px;
+padding: 24px;
+}
+.ads {
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+.jungle {
+border: 3px solid black;
+padding: 24px;
+display: flex;
+flex-direction: column;
+}
+.scroll {
+border: 1px solid #ddd;
+padding: 12px;
+overflow-y: auto;
+}
+.signup {
+display: flex;
+gap: 8px;
+margin: 12px 0;
+}
+.rule-line {
+margin-left: 6px;
+}
+`}</style>
 </main>
 );
 }
