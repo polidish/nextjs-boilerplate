@@ -66,8 +66,9 @@ fontWeight: 700,
 fontStyle: 'italic',
 fontSize: 14,
 }}
-dangerouslySetInnerHTML={{ __html: ADS[index].caption }}
-/>
+>
+{ADS[index].caption}
+</div>
 </div>
 </div>
 );
@@ -95,33 +96,21 @@ const [posting, setPosting] = useState(false);
 
 const verified = !!session;
 
-/* ---------------- AUTH (HARDENED) ---------------- */
+/* ---------------- AUTH ---------------- */
 
 useEffect(() => {
-let alive = true;
-
-async function hydrateSession() {
-// Keep checking briefly until Supabase finishes magic-link exchange
-for (let i = 0; i < 10; i++) {
-const { data } = await supabase.auth.getSession();
-if (data.session) {
-if (alive) setSession(data.session);
-return;
-}
-await new Promise((r) => setTimeout(r, 300));
-}
-}
-
-hydrateSession();
-loadVines();
-
-const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-if (alive) setSession(s);
+supabase.auth.getSession().then(({ data }) => {
+setSession(data.session);
 });
 
+const { data: listener } = supabase.auth.onAuthStateChange((_event, s) => {
+setSession(s);
+});
+
+loadVines();
+
 return () => {
-alive = false;
-sub?.subscription.unsubscribe();
+listener.subscription.unsubscribe();
 };
 }, []);
 
@@ -167,44 +156,19 @@ loadVines();
 
 return (
 <main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-{/* HEADER */}
-<header
-style={{
-background: 'black',
-padding: '12px 24px',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'space-between',
-}}
->
-<Image
-src="/_logo polidish.png"
-alt="Polidish"
-width={96}
-height={96}
-style={{ width: 48, height: 48 }}
-priority
-/>
-<div
-style={{
-color: '#d07a3a',
-fontSize: 'clamp(14px, 1.6vw, 20px)',
-letterSpacing: '0.05em',
-textTransform: 'uppercase',
-fontWeight: 700,
-}}
->
+
+<header style={{ background: 'black', padding: '12px 24px', display: 'flex', justifyContent: 'space-between' }}>
+<Image src="/_logo polidish.png" alt="Polidish" width={48} height={48} />
+<div style={{ color: '#d07a3a', fontWeight: 700 }}>
 THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
-{/* BODY */}
 <section className="grid">
 <aside className="ads">
 <AdFrame startIndex={0} />
 <AdFrame startIndex={1} />
 <AdFrame startIndex={2} />
-
 <div className="outpost-links">
 <a href="/blog">BLOG</a>
 <a href="/store">STORE</a>
@@ -217,7 +181,6 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <em><strong>May the best mind win.</strong></em>
 </h2>
 
-{/* SIGN UP */}
 <div className="signup">
 <input
 type="email"
@@ -230,16 +193,13 @@ onChange={(e) => setEmail(e.target.value)}
 
 {sent && <div>Magic link sent.</div>}
 
-{/* JUNGLE RULES */}
 <div className="jungle-rules">
 {verified ? (
 <>
 <strong>
 You are now an official verified vine author and will be displayed publicly as…
 </strong>
-<div>
-Published vines cannot be edited. You may delete your authored vine at any time.
-</div>
+<div>Published vines cannot be edited. You may delete your authored vine at any time.</div>
 <div><em>deleted</em> means deleted.</div>
 <div><strong>Add your vine below.</strong></div>
 </>
@@ -248,8 +208,8 @@ Published vines cannot be edited. You may delete your authored vine at any time.
 )}
 </div>
 
-{/* JUNGLE THREAD */}
 <div className="scroll">
+{verified && (
 <>
 <textarea
 value={draft}
@@ -257,9 +217,7 @@ onChange={(e) => setDraft(e.target.value)}
 rows={3}
 style={{ width: '100%', marginBottom: 12 }}
 />
-<button onClick={postVine} disabled={posting}>
-Post
-</button>
+<button onClick={postVine} disabled={posting}>Post</button>
 </>
 )}
 
@@ -281,7 +239,6 @@ Post
 </section>
 </section>
 
-{/* FOOTER */}
 <footer className="footer">
 <div>
 Polidish LLC is not legally responsible for your poor judgment.
@@ -291,88 +248,6 @@ Two-factor Authentication. It’s a troll-free freedom fest.
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
 
-{/* STYLES */}
-<style jsx>{`
-.grid {
-display: grid;
-grid-template-columns: 320px 1fr;
-gap: 24px;
-padding: 24px;
-flex: 1;
-}
-.ads {
-display: flex;
-flex-direction: column;
-gap: 16px;
-}
-.outpost-links {
-display: flex;
-gap: 12px;
-margin-top: 8px;
-}
-.outpost-links a {
-background: black;
-color: gold;
-padding: 8px 12px;
-text-decoration: none;
-font-weight: 700;
-}
-.jungle {
-border: 3px solid black;
-padding: 24px;
-display: flex;
-flex-direction: column;
-background: white;
-}
-.signup {
-display: flex;
-gap: 8px;
-margin: 12px 0;
-}
-.signup input {
-flex: 1;
-padding: 8px;
-}
-.jungle-rules {
-margin: 12px 0;
-padding: 12px;
-border: 1px solid #bbb;
-}
-.scroll {
-border: 1px solid #ddd;
-padding: 12px;
-flex: 1;
-overflow-y: auto;
-min-height: 160vh;
-}
-.jungle-marker {
-text-align: center;
-margin: 16px 0;
-}
-.vine {
-margin-bottom: 16px;
-}
-.author {
-font-weight: 700;
-}
-.age {
-font-size: 12px;
-margin-top: 12px;
-}
-.footer {
-padding: 16px 24px;
-font-size: 12px;
-border-top: 2px solid black;
-}
-@media (max-width: 768px) {
-.grid {
-grid-template-columns: 1fr;
-}
-.scroll {
-min-height: 300vh;
-}
-}
-`}</style>
 </main>
 );
 }
