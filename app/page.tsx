@@ -1,196 +1,215 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Polidish</title>
+'use client';
 
-<style>
-/* ===== RESET ===== */
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;height:100%}
+import { useEffect } from 'react';
 
-/* ===== GLOBAL ===== */
-body{
-font-family:Georgia,serif;
-background:#c87c00;
-color:#111;
-}
+export default function Page() {
+useEffect(() => {
+const ads = document.querySelectorAll<HTMLElement>('.ad');
+const transition = 15000;
+let i = 0;
 
-/* ===== HEADER ===== */
-.header{
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:14px 24px;
-border-bottom:1px solid #111;
-}
-._logo{height:34px}
-.header-line{font-style:italic;font-size:16px}
+function rotate() {
+const current = ads[i];
+const hold = parseInt(current.dataset.hold || '0', 10);
 
-/* ===== PAGE GRID ===== */
-.page{
-display:grid;
-grid-template-columns:280px 1fr;
-min-height:calc(100vh - 64px);
+setTimeout(() => {
+current.classList.remove('active');
+
+setTimeout(() => {
+i = (i + 1) % ads.length;
+ads[i].classList.add('active');
+rotate();
+}, transition);
+
+}, hold);
 }
 
-/* ===== OUTPOST ===== */
-.outpost{
-display:flex;
-flex-direction:column;
-padding:18px;
-border-right:1px solid #111;
-}
-.outpost-note{font-size:13px;margin-bottom:16px}
+if (ads.length > 0) rotate();
+}, []);
 
-.ad{display:none}
-.ad.active{display:block}
-.ad-caption{margin-top:10px;font-size:14px}
+return (
+<>
+<style jsx global>{`
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
 
-.outpost-links{
-margin-top:auto;
-display:flex;
-gap:12px;
-}
-.outpost-btn{
-border:1px solid #111;
-padding:6px 10px;
-background:transparent;
-color:#111;
-text-decoration:none;
+body {
+font-family: Georgia, serif;
+background: #c87c00;
+color: #111;
 }
 
-/* ===== JUNGLE ===== */
-.jungle{
-display:flex;
-flex-direction:column;
-min-height:100%;
-}
-.auth{
-padding:16px 24px;
-border-bottom:1px solid #111;
-}
-.auth input{
-width:100%;
-padding:8px;
-border:1px solid #111;
-background:transparent;
-font-family:Georgia,serif;
-}
-.jungle-thread{
-flex:1;
-padding:24px;
-overflow-y:auto;
-}
-.jungle-thread::after{
-content:"";
-display:block;
-height:180vh;
-}
-.mini-footer{
-padding:12px 24px;
-border-top:1px solid #111;
-font-size:12px;
+.header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 24px;
+border-bottom: 1px solid #111;
 }
 
-/* ===== FOOTER ===== */
-.footer{
-padding:16px 24px;
-border-top:1px solid #111;
-font-size:12px;
+._logo { height: 34px; }
+
+.header-line {
+font-style: italic;
+font-size: 16px;
 }
 
-/* ===== MOBILE ===== */
-@media(max-width:768px){
-.page{grid-template-columns:1fr}
-.outpost{
-order:2;
-border-right:none;
-border-top:1px solid #111;
+.page {
+display: grid;
+grid-template-columns: 280px 1fr;
+min-height: calc(100vh - 64px);
 }
-.jungle{order:1}
+
+.outpost {
+display: flex;
+flex-direction: column;
+padding: 18px;
+border-right: 1px solid #111;
 }
-</style>
-</head>
 
-<body>
+.outpost-note {
+font-size: 13px;
+margin-bottom: 16px;
+}
 
-<header class="header">
-<img src="/_logo.png" class="_logo" alt="Polidish logo">
-<div class="header-line">Politely dishing politics. May the best mind win.</div>
+.ad { display: none; }
+.ad.active { display: block; }
+
+.ad-caption {
+margin-top: 10px;
+font-size: 14px;
+}
+
+.outpost-links {
+margin-top: auto;
+display: flex;
+gap: 12px;
+}
+
+.outpost-btn {
+border: 1px solid #111;
+padding: 6px 10px;
+background: transparent;
+text-decoration: none;
+color: #111;
+}
+
+.jungle {
+display: flex;
+flex-direction: column;
+min-height: 100%;
+}
+
+.auth {
+padding: 16px 24px;
+border-bottom: 1px solid #111;
+}
+
+.auth input {
+width: 100%;
+padding: 8px;
+border: 1px solid #111;
+background: transparent;
+font-family: Georgia, serif;
+}
+
+.signin-note {
+margin-top: 8px;
+font-size: 13px;
+}
+
+.jungle-thread {
+flex: 1;
+padding: 24px;
+overflow-y: auto;
+}
+
+.jungle-thread::after {
+content: '';
+display: block;
+height: 180vh;
+}
+
+.mini-footer {
+padding: 12px 24px;
+border-top: 1px solid #111;
+font-size: 12px;
+}
+
+.footer {
+padding: 16px 24px;
+border-top: 1px solid #111;
+font-size: 12px;
+}
+
+@media (max-width: 768px) {
+.page { grid-template-columns: 1fr; }
+.outpost {
+order: 2;
+border-right: none;
+border-top: 1px solid #111;
+}
+.jungle { order: 1; }
+}
+`}</style>
+
+{/* HEADER */}
+<header className="header">
+<img src="/_logo.png" className="_logo" alt="Polidish logo" />
+<div className="header-line">
+Politely dishing politics. May the best mind win.
+</div>
 </header>
 
-<div class="page">
+<div className="page">
 
-<!-- LEFT: OUTPOST -->
-<aside class="outpost">
-<div class="outpost-note">Uncurated.</div>
+{/* OUTPOST */}
+<aside className="outpost">
+<div className="outpost-note">Uncurated.</div>
 
-<div class="ad active" data-hold="15000">
-<img src="/ads/ad1.jpg" alt="">
+<div className="ad active" data-hold="15000">
+<img src="/ads/ad1.jpg" alt="" />
 </div>
 
-<div class="ad" data-hold="32000">
-<img src="/ads/ad2.jpg" alt="">
-<div class="ad-caption" id="ad2-caption"></div>
+<div className="ad" data-hold="32000">
+<img src="/ads/ad2.jpg" alt="" />
+<div className="ad-caption">
+{typeof window !== 'undefined' && (window as any).POLIDISH_AD2_CAPTION}
+</div>
 </div>
 
-<div class="ad" data-hold="60000">
-<img src="/ads/ad3.jpg" alt="">
-<div class="ad-caption" id="ad3-caption"></div>
+<div className="ad" data-hold="60000">
+<img src="/ads/ad3.jpg" alt="" />
+<div className="ad-caption">
+{typeof window !== 'undefined' && (window as any).POLIDISH_AD3_CAPTION}
+</div>
 </div>
 
-<div class="outpost-links">
-<a class="outpost-btn" href="https://polidish.blog">polidish.blog</a>
-<a class="outpost-btn" href="https://polidish.store">polidish.store</a>
+<div className="outpost-links">
+<a className="outpost-btn" href="https://polidish.blog">polidish.blog</a>
+<a className="outpost-btn" href="https://polidish.store">polidish.store</a>
 </div>
 </aside>
 
-<!-- RIGHT: JUNGLE -->
-<main class="jungle">
-<div class="auth">
-<input type="email" placeholder="Email for member sign-up">
-<div style="margin-top:8px;font-size:13px">Sign in required to post.</div>
+{/* JUNGLE */}
+<main className="jungle">
+<div className="auth">
+<input type="email" placeholder="Email for member sign-up" />
+<div className="signin-note">Sign in required to post.</div>
 </div>
 
-<section class="jungle-thread">
-<!-- existing jungle content -->
+<section className="jungle-thread">
+{/* existing jungle content */}
 </section>
 
-<div class="mini-footer">18+</div>
+<div className="mini-footer">18+</div>
 </main>
 
 </div>
 
-<footer class="footer" id="footer-copy"></footer>
-
-<script>
-/* ===== AD ROTATION ===== */
-(()=> {
-const ads=document.querySelectorAll('.ad');
-const transition=15000;
-let i=0;
-function rotate(){
-const cur=ads[i];
-const hold=parseInt(cur.dataset.hold,10);
-setTimeout(()=>{
-cur.classList.remove('active');
-setTimeout(()=>{
-i=(i+1)%ads.length;
-ads[i].classList.add('active');
-rotate();
-},transition);
-},hold);
+<footer className="footer">
+{typeof window !== 'undefined' && (window as any).POLIDISH_FOOTER_COPY}
+</footer>
+</>
+);
 }
-rotate();
-})();
-
-/* ===== COPY BINDING (CANON) ===== */
-document.getElementById('ad2-caption').textContent = window.POLIDISH_AD2_CAPTION;
-document.getElementById('ad3-caption').textContent = window.POLIDISH_AD3_CAPTION;
-document.getElementById('footer-copy').innerHTML = window.POLIDISH_FOOTER_COPY;
-</script>
-
-</body>
-</html>
