@@ -14,7 +14,7 @@ duration: 15000,
 },
 {
 src: '/decanter.jpeg',
-caption: 'Advertisements are curated for your continued privacy.',
+caption: 'Advertisements are uncurated for your continued privacy.',
 duration: 30000,
 },
 {
