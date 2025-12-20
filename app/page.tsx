@@ -18,8 +18,6 @@ const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
 
-/* ---------- AUTH STATE ---------- */
-
 useEffect(() => {
 supabase.auth.getSession().then(({ data }) => {
 setVerified(!!data.session);
@@ -36,8 +34,6 @@ sub?.subscription.unsubscribe();
 };
 }, []);
 
-/* ---------- LOAD VINES ---------- */
-
 async function loadVines() {
 const { data, error } = await supabase
 .from('vines')
@@ -52,8 +48,6 @@ return;
 setVines(data || []);
 }
 
-/* ---------- JOIN ---------- */
-
 async function handleJoin() {
 const { error } = await supabase.auth.signInWithOtp({
 email,
@@ -63,9 +57,9 @@ options: { emailRedirectTo: 'https://polidish.com' },
 if (!error) setSent(true);
 }
 
-/* ---------- POST ---------- */
-
 async function postVine() {
+console.log('POST CLICKED'); // 👈 THE ONLY NEW LINE
+
 if (!verified) return;
 
 const text = draft.trim();
@@ -100,8 +94,6 @@ await loadVines();
 setPosting(false);
 }
 
-/* ---------- RENDER ---------- */
-
 return (
 <main style={{ fontFamily: 'serif', padding: 24, maxWidth: 720 }}>
 <h2>
@@ -131,7 +123,8 @@ style={{ padding: 8, marginRight: 8, width: '60%' }}
 value={draft}
 onChange={(e) => setDraft(e.target.value)}
 rows={4}
-placeholder={verified ? '' : 'Join via magic link to post.'}
+placeholder={verified ? '' : 'Join via magic link to post.'
+}
 style={{ width: '100%', padding: 10, marginBottom: 8 }}
 />
 
