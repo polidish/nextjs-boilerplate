@@ -250,7 +250,6 @@ Published vines cannot be edited. You may delete your authored vine at any time.
 
 {/* JUNGLE THREAD */}
 <div className="scroll">
-{verified && (
 <>
 <textarea
 value={draft}
