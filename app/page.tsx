@@ -4,19 +4,9 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { supabase } from './lib/supabaseClient';
 
-/*
-POLIDISH_PAGE_v1.1_FULL_ADD_ONLY_JUNGLE
-Baseline preserved + Jungle enabled
-Additive only. No takeaways.
-
-Expected render:
-- Black header with orange venue line
-- 3 rotating ads with gold captions
-- Store + Blog links under third ad
-- Jungle bordered, scrollable, contained
-- Footer visible
-- Verified authors can post at bottom
-*/
+/* =========================
+AD CONFIG
+========================= */
 
 const ADS = [
 {
@@ -26,13 +16,12 @@ duration: 15000,
 },
 {
 src: '/decanter.jpeg',
-caption: 'Advertisements are absolutely uncurated for your privacy.',
+caption: 'Luxury brands belong where readers think.',
 duration: 30000,
 },
 {
 src: '/peacock.jpeg',
-caption:
-'Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
+caption: 'Polidish is text-first. Ideas are the asset.',
 duration: 60000,
 },
 ];
@@ -43,13 +32,13 @@ const [visible, setVisible] = useState(true);
 
 useEffect(() => {
 const hold = ADS[index].duration;
-const transition = 15000;
+const fade = 15000;
 
 const t1 = setTimeout(() => setVisible(false), hold);
 const t2 = setTimeout(() => {
 setIndex((i) => (i + 1) % ADS.length);
 setVisible(true);
-}, hold + transition);
+}, hold + fade);
 
 return () => {
 clearTimeout(t1);
@@ -85,143 +74,118 @@ fontSize: 14,
 );
 }
 
+/* =========================
+TYPES
+========================= */
+
 type Vine = {
 id: string;
 content: string;
 created_at: string;
 };
 
+/* =========================
+PAGE
+========================= */
+
 export default function Page() {
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
 const [verified, setVerified] = useState(false);
-
+const [showVerifiedBanner, setShowVerifiedBanner] = useState(false);
 const [vines, setVines] = useState<Vine[]>([]);
 const [draft, setDraft] = useState('');
-const [posting, setPosting] = useState(false);
-const [status, setStatus] = useState('');
-const [showVerified, setShowVerified] = useState(false);
 
 useEffect(() => {
-let mounted = true;
-
-(async () => {
-await supabase.auth.refreshSession();
-const { data } = await supabase.auth.getSession();
-if (!mounted) return;
-
-const isVerified = !!data.session;
-setVerified(isVerified);
-
-if (isVerified) {
-setShowVerified(true);
-setTimeout(() => setShowVerified(false), 3000);
-}
-
-loadVines();
-})();
-
-const { data: authSub } = supabase.auth.onAuthStateChange((_e, session) => {
-const isVerified = !!session;
-setVerified(isVerified);
-
-if (isVerified) {
-setShowVerified(true);
-setTimeout(() => setShowVerified(false), 3000);
+supabase.auth.getSession().then(({ data }) => {
+if (data.session) {
+setVerified(true);
+setShowVerifiedBanner(true);
+setTimeout(() => setShowVerifiedBanner(false), 4000);
 }
 });
+
+loadVines();
 
 const channel = supabase
 .channel('vines')
 .on(
 'postgres_changes',
 { event: 'INSERT', schema: 'public', table: 'vines' },
-() => loadVines()
+loadVines
 )
 .subscribe();
 
 return () => {
-mounted = false;
-authSub?.subscription?.unsubscribe();
 supabase.removeChannel(channel);
 };
 }, []);
 
 async function loadVines() {
-const { data, error } = await supabase
+const { data } = await supabase
 .from('vines')
 .select('id, content, created_at')
 .order('created_at', { ascending: true });
 
-if (error) {
-setStatus(`READ ERROR: ${error.message}`);
-return;
-}
-
-setVines(data || []);
+if (data) setVines(data);
 }
 
 async function postVine() {
-setStatus('');
-if (!verified) return;
+if (!draft.trim()) return;
 
-const text = draft.trim();
-if (!text) return;
-
-setPosting(true);
-
-const {
-data: { user },
-error: userError,
-} = await supabase.auth.getUser();
-
-if (userError || !user) {
-setStatus('AUTH ERROR');
-setPosting(false);
-return;
-}
-
-const { error } = await supabase.from('vines').insert({
-content: text,
-author_id: user.id,
-});
-
-if (error) {
-setStatus(`POST ERROR: ${error.message}`);
-setPosting(false);
-return;
-}
-
+await supabase.from('vines').insert({ content: draft.trim() });
 setDraft('');
-setStatus('Posted.');
-loadVines();
-setPosting(false);
 }
 
 async function handleJoin() {
-setStatus('');
 const { error } = await supabase.auth.signInWithOtp({
 email,
 options: { emailRedirectTo: 'https://polidish.com' },
 });
 
-if (error) {
-setStatus(`JOIN ERROR: ${error.message}`);
-return;
-}
-
-setSent(true);
+if (!error) setSent(true);
 }
 
 return (
 <main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 {/* HEADER */}
-<header style={{ background: 'black', padding: '12px 24px', display: 'flex', justifyContent: 'space-between' }}>
+<header
+style={{
+background: 'black',
+padding: '12px 24px',
+display: 'flex',
+alignItems: 'center',
+justifyContent: 'space-between',
+}}
+>
 <Image src="/_logo polidish.png" alt="Polidish" width={48} height={48} />
-<div style={{ color: '#d07a3a', fontWeight: 600 }}>
-THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
+<div
+style={{
+color: '#d07a3a',
+fontSize: 'clamp(14px, 1.6vw, 20px)',
+letterSpacing: '0.05em',
+textTransform: 'uppercase',
+fontWeight: 600,
+}}
+>
+The venue for uncensored political discourse. 18+
 </div>
 </header>
+
+{/* VERIFIED BANNER */}
+{showVerifiedBanner && (
+<div
+style={{
+background: 'gold',
+color: 'black',
+padding: '12px',
+textAlign: 'center',
+fontWeight: 700,
+}}
+>
+YOU are a verified author.
+</div>
+)}
 
 {/* BODY */}
 <section className="grid">
@@ -230,11 +194,8 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <AdFrame startIndex={1} />
 <AdFrame startIndex={2} />
 
-{/* Store / Blog links */}
-<div style={{ marginTop: 12, fontSize: 14 }}>
-<div><a href="/store">Store</a></div>
-<div><a href="/blog">Blog</a></div>
-</div>
+<a className="outpost-btn" href="/store">STORE</a>
+<a className="outpost-btn" href="/blog">BLOG</a>
 </aside>
 
 <section className="jungle">
@@ -243,7 +204,6 @@ Politely dishing politics.
 <span className="rule-line">May the best mind win.</span>
 </h2>
 
-{/* Sign up */}
 <div className="signup">
 <input
 type="email"
@@ -254,5 +214,102 @@ onChange={(e) => setEmail(e.target.value)}
 <button onClick={handleJoin}>Join</button>
 </div>
 
-{sent && <div>Magic link sent.</div>}
-{showVerified && <div
+{sent && <div style={{ marginBottom: 12 }}>Magic link sent.</div>}
+
+<p>Freedom is deliberate. Welcome to the Jungle Thread.</p>
+
+<div className="scroll">
+{vines.map((v) => (
+<div key={v.id} style={{ marginBottom: 12 }}>
+{v.content}
+</div>
+))}
+
+{verified && (
+<>
+<textarea
+value={draft}
+onChange={(e) => setDraft(e.target.value)}
+rows={4}
+style={{ width: '100%', marginTop: 12 }}
+/>
+<button onClick={postVine} style={{ marginTop: 8 }}>
+Post
+</button>
+</>
+)}
+</div>
+
+<p className="age">
+18+ only. By using Polidish, you affirm that you are at least 18 years of age.
+</p>
+</section>
+</section>
+
+{/* FOOTER */}
+<footer className="footer">
+<div>
+Polidish LLC is not legally responsible for your poor judgment.
+</div>
+<div>© 2025 Polidish LLC</div>
+</footer>
+
+<style jsx>{`
+.grid {
+display: grid;
+grid-template-columns: 320px 1fr;
+gap: 24px;
+padding: 24px;
+flex: 1;
+}
+.ads {
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+.outpost-btn {
+display: block;
+background: black;
+color: gold;
+text-align: center;
+padding: 10px;
+font-weight: 600;
+text-decoration: none;
+border: 2px solid gold;
+}
+.jungle {
+border: 3px solid black;
+padding: 24px;
+background: white;
+display: flex;
+flex-direction: column;
+}
+.scroll {
+flex: 1;
+overflow-y: auto;
+border: 1px solid #ddd;
+padding: 12px;
+}
+.signup {
+display: flex;
+gap: 8px;
+margin: 12px 0;
+}
+.signup input {
+flex: 1;
+padding: 8px;
+}
+.footer {
+border-top: 2px solid black;
+padding: 16px 24px;
+font-size: 12px;
+}
+@media (max-width: 768px) {
+.grid {
+grid-template-columns: 1fr;
+}
+}
+`}</style>
+</main>
+);
+}
