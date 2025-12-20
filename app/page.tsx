@@ -12,22 +12,25 @@ created_at: string;
 export default function Page() {
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
-const [verified, setVerified] = useState(false);
+
+const [session, setSession] = useState<any>(null);
 
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
 
-/* ---------- AUTH STATE ---------- */
+/* ---------- AUTH (SOURCE OF TRUTH) ---------- */
 
 useEffect(() => {
 supabase.auth.getSession().then(({ data }) => {
-setVerified(!!data.session);
+setSession(data.session);
 });
 
-const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-setVerified(!!session);
-});
+const { data: sub } = supabase.auth.onAuthStateChange(
+(_event, session) => {
+setSession(session);
+}
+);
 
 loadVines();
 
@@ -36,7 +39,7 @@ sub?.subscription.unsubscribe();
 };
 }, []);
 
-/* ---------- LOAD VINES ---------- */
+/* ---------- DATA ---------- */
 
 async function loadVines() {
 const { data, error } = await supabase
@@ -66,27 +69,16 @@ if (!error) setSent(true);
 /* ---------- POST ---------- */
 
 async function postVine() {
-if (!verified) return;
+if (!session) return;
 
 const text = draft.trim();
 if (!text) return;
 
 setPosting(true);
 
-const {
-data: { user },
-error: userError,
-} = await supabase.auth.getUser();
-
-if (userError || !user) {
-console.error('AUTH ERROR:', userError);
-setPosting(false);
-return;
-}
-
 const { error } = await supabase.from('vines').insert({
 content: text,
-author_id: user.id,
+author_id: session.user.id,
 });
 
 if (error) {
@@ -121,7 +113,7 @@ style={{ padding: 8, marginRight: 8, width: '60%' }}
 
 {sent && <div>Magic link sent.</div>}
 
-{verified && (
+{session && (
 <div style={{ margin: '12px 0' }}>
 <strong>YOU</strong> are verified. Post political discourse here.
 </div>
@@ -131,19 +123,19 @@ style={{ padding: 8, marginRight: 8, width: '60%' }}
 value={draft}
 onChange={(e) => setDraft(e.target.value)}
 rows={4}
-placeholder={verified ? '' : 'Join via magic link to post.'}
+placeholder={session ? '' : 'Join via magic link to post.'}
 style={{ width: '100%', padding: 10, marginBottom: 8 }}
 />
 
 <button
 onClick={postVine}
-disabled={!verified || posting || !draft.trim()}
+disabled={!session || posting || !draft.trim()}
 style={{
 border: '2px solid black',
 padding: '8px 12px',
 fontWeight: 600,
 cursor:
-!verified || posting || !draft.trim()
+!session || posting || !draft.trim()
 ? 'not-allowed'
 : 'pointer',
 }}
