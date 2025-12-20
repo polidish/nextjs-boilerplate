@@ -8,7 +8,7 @@ import { supabase } from './lib/supabaseClient';
 
 const ADS = [
 { src: '/pier.jpeg', caption: 'Visualize your ad right here.', duration: 15000 },
-{ src: '/decanter.jpeg', caption: 'Advertisements are absolutely uncurated.', duration: 30000 },
+{ src: '/decanter.jpeg', caption: 'Advertisements are absolutely uncurated for your privacy.', duration: 30000 },
 { src: '/peacock.jpeg', caption: 'Polidish Outpost — HWWI.', duration: 60000 },
 ];
 
@@ -41,11 +41,7 @@ return (
 
 /* ---------------- PAGE ---------------- */
 
-type Vine = {
-id: string;
-content: string;
-created_at: string;
-};
+type Vine = { id: string; content: string; created_at: string };
 
 export default function Page() {
 const [email, setEmail] = useState('');
@@ -54,9 +50,10 @@ const [sent, setSent] = useState(false);
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
+
 const [userId, setUserId] = useState<string | null>(null);
 
-/* ---- AUTH: capture user id once ---- */
+/* ---- auth: capture user id once ---- */
 useEffect(() => {
 supabase.auth.getUser().then(({ data }) => {
 setUserId(data.user?.id ?? null);
@@ -71,7 +68,7 @@ sub?.subscription?.unsubscribe();
 };
 }, []);
 
-/* ---- DATA ---- */
+/* ---- data ---- */
 useEffect(() => {
 loadVines();
 
@@ -90,12 +87,10 @@ const { data } = await supabase
 .from('vines')
 .select('id, content, created_at')
 .order('created_at', { ascending: true });
-
 if (data) setVines(data as Vine[]);
 }
 
-/* ---- ACTIONS ---- */
-
+/* ---- actions ---- */
 async function handleJoin() {
 const { error } = await supabase.auth.signInWithOtp({
 email,
@@ -106,27 +101,17 @@ if (!error) setSent(true);
 
 async function postVine() {
 if (!userId) return;
-
 const text = draft.trim();
 if (!text) return;
 
 setPosting(true);
-
-// optimistic append (guarantees visibility)
-const tempVine: Vine = {
-id: crypto.randomUUID(),
-content: text,
-created_at: new Date().toISOString(),
-};
-
-setVines((prev) => [...prev, tempVine]);
-setDraft('');
-
 try {
 await supabase.from('vines').insert({
 content: text,
 author_id: userId,
 });
+setDraft('');
+await loadVines();
 } finally {
 setPosting(false);
 }
@@ -147,8 +132,7 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 
 <section className="jungle">
 <h2>
-Politely dishing politics.
-<span className="rule-line">May the best mind win.</span>
+Politely dishing politics. <span className="rule-line">May the best mind win.</span>
 </h2>
 
 <div className="signup">
@@ -178,7 +162,7 @@ Post
 </button>
 
 {vines.length === 0 ? (
-<div style={{ fontStyle: 'italic' }}>The lion sleeps tonight.</div>
+<div style={{ fontStyle: 'italic' }}>It's Polidish time somewhere.</div>
 ) : (
 vines.map((v) => <div key={v.id}>{v.content}</div>)
 )}
@@ -221,4 +205,3 @@ margin-left: 6px;
 </main>
 );
 }
-
