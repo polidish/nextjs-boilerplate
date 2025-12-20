@@ -183,7 +183,7 @@ textTransform: 'uppercase',
 fontWeight: 700,
 }}
 >
-Join now. Posting Coming Soon. THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
+THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
