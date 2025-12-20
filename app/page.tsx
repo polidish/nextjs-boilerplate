@@ -95,21 +95,32 @@ const [posting, setPosting] = useState(false);
 
 const verified = !!session;
 
-/* ---------------- AUTH ---------------- */
+/* ---------------- AUTH (HARDENED) ---------------- */
 
 useEffect(() => {
-(async () => {
-await supabase.auth.refreshSession();
+let alive = true;
+
+async function hydrateSession() {
+// Keep checking briefly until Supabase finishes magic-link exchange
+for (let i = 0; i < 10; i++) {
 const { data } = await supabase.auth.getSession();
-setSession(data.session);
+if (data.session) {
+if (alive) setSession(data.session);
+return;
+}
+await new Promise((r) => setTimeout(r, 300));
+}
+}
+
+hydrateSession();
 loadVines();
-})();
 
 const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-setSession(s);
+if (alive) setSession(s);
 });
 
 return () => {
+alive = false;
 sub?.subscription.unsubscribe();
 };
 }, []);
@@ -366,4 +377,3 @@ min-height: 300vh;
 </main>
 );
 }
-
