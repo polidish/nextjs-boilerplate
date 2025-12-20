@@ -9,7 +9,7 @@ import { supabase } from './lib/supabaseClient';
 const ADS = [
 {
 src: '/pier.jpeg',
-caption: 'Visualize your ad copy right here, to the *left*, or in the *center*.',
+caption: 'Visualize your ad copy right here, to the left, or in the center.',
 duration: 15000,
 },
 {
@@ -210,7 +210,7 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <div className="signup">
 <input
 type="email"
-placeholder="Email for member sign-up"
+placeholder="Please enter email for member sign-up"
 value={email}
 onChange={(e) => setEmail(e.target.value)}
 />
@@ -224,10 +224,10 @@ onChange={(e) => setEmail(e.target.value)}
 {verified ? (
 <>
 <strong>
-You are a verified author and will be displayed publicly as…
+You are now an official verified vine author and will be displayed publicly as…
 </strong>
 <div>
-Posts cannot be edited. You may delete your post at any time.
+Published vines cannot be edited. You may delete your authored vine at any time.
 </div>
 <div><em>deleted</em> means deleted.</div>
 <div><strong>Add your vine below.</strong></div>
@@ -254,7 +254,7 @@ Post
 )}
 
 <div className="jungle-marker">
-<em>The Jungle keeps growing and growing.</em>
+<em>The Jungle vines keeps growing and growing.</em>
 </div>
 
 {vines.map((v) => (
@@ -266,7 +266,7 @@ Post
 </div>
 
 <p className="age">
-18+ only. By visiting or joining Polidish, you affirm that you are at least 18 years of age.
+18+ only. By visiting or joining Polidish, you affirm that you are at least 18 years of age, Voting age.
 </p>
 </section>
 </section>
@@ -275,8 +275,8 @@ Post
 <footer className="footer">
 <div>
 Polidish LLC is not legally responsible for your poor judgment.
-If you endanger your children, threaten terrorism, or break the law, you reveal yourself.
-Two factor authentication. It’s a troll free freedom fest.
+If you endanger children, threaten terrorism, or break the law, you reveal yourself.
+Two-factor Authentication. It’s a troll-free freedom fest.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
