@@ -13,13 +13,14 @@ export default function Page() {
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
 
+// SOURCE OF TRUTH
 const [session, setSession] = useState<any>(null);
 
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
 
-/* ---------- AUTH (SOURCE OF TRUTH) ---------- */
+/* ---------- AUTH STATE ---------- */
 
 useEffect(() => {
 supabase.auth.getSession().then(({ data }) => {
@@ -27,7 +28,7 @@ setSession(data.session);
 });
 
 const { data: sub } = supabase.auth.onAuthStateChange(
-(_event, session) => {
+(_e, session) => {
 setSession(session);
 }
 );
@@ -39,7 +40,9 @@ sub?.subscription.unsubscribe();
 };
 }, []);
 
-/* ---------- DATA ---------- */
+const verified = !!session;
+
+/* ---------- LOAD VINES ---------- */
 
 async function loadVines() {
 const { data, error } = await supabase
@@ -113,7 +116,7 @@ style={{ padding: 8, marginRight: 8, width: '60%' }}
 
 {sent && <div>Magic link sent.</div>}
 
-{session && (
+{verified && (
 <div style={{ margin: '12px 0' }}>
 <strong>YOU</strong> are verified. Post political discourse here.
 </div>
@@ -123,19 +126,19 @@ style={{ padding: 8, marginRight: 8, width: '60%' }}
 value={draft}
 onChange={(e) => setDraft(e.target.value)}
 rows={4}
-placeholder={session ? '' : 'Join via magic link to post.'}
+placeholder={verified ? '' : 'Join via magic link to post.'}
 style={{ width: '100%', padding: 10, marginBottom: 8 }}
 />
 
 <button
 onClick={postVine}
-disabled={!session || posting || !draft.trim()}
+disabled={!verified || posting || !draft.trim()}
 style={{
 border: '2px solid black',
 padding: '8px 12px',
 fontWeight: 600,
 cursor:
-!session || posting || !draft.trim()
+!verified || posting || !draft.trim()
 ? 'not-allowed'
 : 'pointer',
 }}
@@ -145,15 +148,16 @@ Post
 
 <hr style={{ margin: '16px 0' }} />
 
-{vines.length === 0 ? (
-<em>The lion sleeps tonight.</em>
-) : (
-vines.map((v) => (
+<div style={{ marginBottom: 12 }}>
+<em>The Jungle Thread keeps growing and growing. Scroll.</em>
+</div>
+
+{vines.map((v) => (
 <div key={v.id} style={{ marginBottom: 12 }}>
 {v.content}
 </div>
-))
-)}
+))}
 </main>
 );
 }
+
