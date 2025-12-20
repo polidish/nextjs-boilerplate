@@ -160,7 +160,7 @@ return (
 <header style={{ background: 'black', padding: '12px 24px', display: 'flex', justifyContent: 'space-between' }}>
 <Image src="/_logo polidish.png" alt="Polidish" width={48} height={48} />
 <div style={{ color: '#d07a3a', fontWeight: 700 }}>
-THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
+Join Now-Posting Coming Soon THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
@@ -222,7 +222,7 @@ style={{ width: '100%', marginBottom: 12 }}
 )}
 
 <div className="jungle-marker">
-<em>The Jungle vines keeps growing and growing.</em>
+<em>The Jungle vines keep growing and growing.</em>
 </div>
 
 {vines.map((v) => (
