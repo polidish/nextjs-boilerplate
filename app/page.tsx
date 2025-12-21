@@ -9,18 +9,20 @@ import { supabase } from './lib/supabaseClient';
 const ADS = [
 {
 src: '/pier.jpeg',
-caption: 'Visualize your ad copy right here, to the left, or in the center.',
+caption:
+'<strong>Visualize your ad copy right here, <em>to the left</em>, or <em>in the center</em>.</strong>',
 duration: 15000,
 },
 {
 src: '/decanter.jpeg',
-caption: 'Advertisements are uncurated for your continued privacy.',
+caption:
+'<strong>Advertisements are uncurated for your continued privacy.</strong>',
 duration: 30000,
 },
 {
 src: '/peacock.jpeg',
 caption:
-'Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
+'<strong>Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).</strong>',
 duration: 60000,
 },
 ];
@@ -95,21 +97,27 @@ const [posting, setPosting] = useState(false);
 
 const verified = !!session;
 
-/* ---------------- AUTH ---------------- */
+/* ---------------- AUTH (FIXED) ---------------- */
 
 useEffect(() => {
-(async () => {
-await supabase.auth.refreshSession();
+let mounted = true;
+
+const init = async () => {
+// hard rehydrate after magic link redirect
 const { data } = await supabase.auth.getSession();
-setSession(data.session);
-loadVines();
-})();
+if (mounted) setSession(data.session);
+
+await loadVines();
+};
+
+init();
 
 const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-setSession(s);
+if (mounted) setSession(s);
 });
 
 return () => {
+mounted = false;
 sub?.subscription.unsubscribe();
 };
 }, []);
@@ -130,6 +138,7 @@ const { error } = await supabase.auth.signInWithOtp({
 email,
 options: { emailRedirectTo: 'https://polidish.com' },
 });
+
 if (!error) setSent(true);
 }
 
@@ -157,32 +166,9 @@ loadVines();
 return (
 <main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 {/* HEADER */}
-<header
-style={{
-background: 'black',
-padding: '12px 24px',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'space-between',
-}}
->
-<Image
-src="/_logo polidish.png"
-alt="Polidish"
-width={96}
-height={96}
-style={{ width: 48, height: 48 }}
-priority
-/>
-<div
-style={{
-color: '#d07a3a',
-fontSize: 'clamp(14px, 1.6vw, 20px)',
-letterSpacing: '0.05em',
-textTransform: 'uppercase',
-fontWeight: 700,
-}}
->
+<header style={{ background: 'black', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+<Image src="/_logo polidish.png" alt="Polidish" width={96} height={96} style={{ width: 48, height: 48 }} priority />
+<div style={{ color: '#d07a3a', fontSize: 'clamp(14px,1.6vw,20px)', letterSpacing: '0.05em', fontWeight: 700 }}>
 THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
@@ -214,21 +200,29 @@ placeholder="Please enter email for member sign-up"
 value={email}
 onChange={(e) => setEmail(e.target.value)}
 />
-<button onClick={handleJoin}>Join</button>
+<button
+onClick={handleJoin}
+style={{
+background: sent ? 'gold' : 'black',
+color: sent ? 'black' : 'white',
+border: '2px solid black',
+fontWeight: 700,
+}}
+>
+Join
+</button>
 </div>
 
 {sent && <div>Magic link sent.</div>}
 
-{/* JUNGLE RULES */}
+{/* VERIFICATION */}
 <div className="jungle-rules">
 {verified ? (
 <>
 <strong>
-You are now an official verified vine author and will be displayed publicly as…
+You are a verified author. Only when you choose to post will you be displayed publicly as…
 </strong>
-<div>
-Published vines cannot be edited. You may delete your authored vine at any time.
-</div>
+<div>Published vines cannot be edited. You may delete your authored vine at any time.</div>
 <div><em>deleted</em> means deleted.</div>
 <div><strong>Add your vine below.</strong></div>
 </>
@@ -254,7 +248,7 @@ Post
 )}
 
 <div className="jungle-marker">
-<em>The Jungle vines keep growing and growing.</em>
+<em>The Jungle keeps growing and growing.</em>
 </div>
 
 {vines.map((v) => (
@@ -266,7 +260,7 @@ Post
 </div>
 
 <p className="age">
-18+ only. By visiting or joining Polidish, you affirm that you are at least 18 years of age, Voting age.
+18+ only. By visiting or joining Polidish, you affirm that you are at least 18 years of age.
 </p>
 </section>
 </section>
@@ -276,94 +270,38 @@ Post
 <div>
 Polidish LLC is not legally responsible for your poor judgment.
 If you endanger children, threaten terrorism, or break the law, you reveal yourself.
-Two-factor Authentication. It’s a troll-free freedom fest.
+Two-Factor Authentication. It’s a troll-free freedom fest.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
 
 {/* STYLES */}
 <style jsx>{`
-.grid {
-display: grid;
-grid-template-columns: 320px 1fr;
-gap: 24px;
-padding: 24px;
-flex: 1;
-}
-.ads {
-display: flex;
-flex-direction: column;
-gap: 16px;
-}
-.outpost-links {
-display: flex;
-gap: 12px;
-margin-top: 8px;
-}
-.outpost-links a {
-background: black;
-color: gold;
-padding: 8px 12px;
-text-decoration: none;
-font-weight: 700;
-}
-.jungle {
-border: 3px solid black;
-padding: 24px;
-display: flex;
-flex-direction: column;
-background: white;
-}
-.signup {
-display: flex;
-gap: 8px;
-margin: 12px 0;
-}
-.signup input {
-flex: 1;
-padding: 8px;
-}
-.jungle-rules {
-margin: 12px 0;
-padding: 12px;
-border: 1px solid #bbb;
-}
-.scroll {
-border: 1px solid #ddd;
-padding: 12px;
-flex: 1;
-overflow-y: auto;
-min-height: 160vh;
-}
-.jungle-marker {
-text-align: center;
-margin: 16px 0;
-}
-.vine {
-margin-bottom: 16px;
-}
-.author {
-font-weight: 700;
-}
-.age {
-font-size: 12px;
-margin-top: 12px;
-}
-.footer {
-padding: 16px 24px;
-font-size: 12px;
-border-top: 2px solid black;
-}
-@media (max-width: 768px) {
-.grid {
-grid-template-columns: 1fr;
-}
-.scroll {
-min-height: 300vh;
-}
+.grid { display:grid; grid-template-columns:320px 1fr; gap:24px; padding:24px; flex:1; }
+.ads { display:flex; flex-direction:column; gap:16px; }
+.outpost-links { display:flex; gap:12px; margin-top:8px; }
+.outpost-links a { background:black; color:gold; padding:8px 12px; font-weight:700; text-decoration:none; }
+.jungle { border:3px solid black; padding:24px; display:flex; flex-direction:column; background:white; }
+.signup { display:flex; gap:8px; margin:12px 0; }
+.signup input { flex:1; padding:8px; }
+.jungle-rules { margin:12px 0; padding:12px; border:1px solid #bbb; }
+.scroll { border:1px solid #ddd; padding:12px; flex:1; overflow-y:auto; min-height:160vh; }
+.vine { margin-bottom:16px; }
+.author { font-weight:700; }
+.footer { padding:16px 24px; font-size:12px; border-top:2px solid black; }
+@media (max-width:768px) {
+.grid { grid-template-columns:1fr; }
+.scroll { min-height:300vh; }
 }
 `}</style>
 </main>
 );
 }
+
+
+
+
+
+
+
 
