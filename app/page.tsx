@@ -88,6 +88,7 @@ author_display: string;
 export default function Page() {
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
+const [sending, setSending] = useState(false);
 const [session, setSession] = useState<any>(null);
 
 const [draft, setDraft] = useState('');
@@ -96,24 +97,21 @@ const [posting, setPosting] = useState(false);
 
 const verified = !!session;
 
-/* ---------------- AUTH (FIXED) ---------------- */
+/* ---------------- AUTH ---------------- */
 
 useEffect(() => {
-let mounted = true;
-
 (async () => {
-// This is the missing piece — handles magic-link return correctly
+await supabase.auth.refreshSession();
 const { data } = await supabase.auth.getSession();
-if (mounted) setSession(data.session);
+setSession(data.session);
 loadVines();
 })();
 
-const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
-setSession(newSession);
+const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+setSession(s);
 });
 
 return () => {
-mounted = false;
 sub?.subscription.unsubscribe();
 };
 }, []);
@@ -130,16 +128,20 @@ if (data) setVines(data);
 }
 
 async function handleJoin() {
-setSent(false);
+if (!email) return;
+
+setSending(true);
 
 const { error } = await supabase.auth.signInWithOtp({
 email,
-options: {
-emailRedirectTo: 'https://www.polidish.com',
-},
+options: { emailRedirectTo: 'https://polidish.com' },
 });
 
-if (!error) setSent(true);
+if (!error) {
+setSent(true);
+}
+
+setSending(false);
 }
 
 async function postVine() {
@@ -223,36 +225,24 @@ placeholder="Please enter email for member sign-up"
 value={email}
 onChange={(e) => setEmail(e.target.value)}
 />
-<button
-onClick={handleJoin}
-style={{
-background: sent ? 'gold' : 'black',
-color: sent ? 'black' : 'white',
-border: '2px solid gold',
-fontWeight: 700,
-}}
->
-Join
+<button onClick={handleJoin}>
+{sending ? 'Sending…' : 'Join'}
 </button>
 </div>
 
 {sent && <div>Magic link sent.</div>}
 
-{/* JUNGLE RULES */}
+{/* STATUS */}
 <div className="jungle-rules">
 {verified ? (
 <>
 <strong>
-You are a verified author. Only when you choose to post will you appear publicly as…
+You are a verified author. Only when you choose to post will you appear publicly.
 </strong>
-<div>
-Published vines cannot be edited. You may delete your authored vine at any time.
-</div>
-<div><em>deleted</em> means deleted.</div>
-<div><strong>Add your vine below.</strong></div>
+<div>Add your vine below.</div>
 </>
 ) : (
-<strong>Sign in required to post.</strong>
+<strong>Posting coming soon.</strong>
 )}
 </div>
 
@@ -283,10 +273,6 @@ Post
 </div>
 ))}
 </div>
-
-<p className="age">
-18+ only. By visiting or joining Polidish, you affirm that you are at least 18 years of age.
-</p>
 </section>
 </section>
 
@@ -295,7 +281,7 @@ Post
 <div>
 Polidish LLC is not legally responsible for your poor judgment.
 If you endanger children, threaten terrorism, or break the law, you reveal yourself.
-Two-Factor Authentication. It’s a troll-free freedom fest.
+Two-Factor Authentication.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
@@ -320,11 +306,12 @@ gap: 12px;
 margin-top: 8px;
 }
 .outpost-links a {
-background: gold;
-color: black;
+background: black;
+color: gold;
 padding: 8px 12px;
 text-decoration: none;
 font-weight: 700;
+border: 2px solid gold;
 }
 .jungle {
 border: 3px solid black;
@@ -352,7 +339,6 @@ border: 1px solid #ddd;
 padding: 12px;
 flex: 1;
 overflow-y: auto;
-min-height: 120vh;
 }
 .jungle-marker {
 text-align: center;
@@ -372,9 +358,6 @@ border-top: 2px solid black;
 @media (max-width: 768px) {
 .grid {
 grid-template-columns: 1fr;
-}
-.scroll {
-min-height: 300vh;
 }
 }
 `}</style>
