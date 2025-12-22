@@ -88,39 +88,37 @@ author_display: string;
 export default function Page() {
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
-const [joining, setJoining] = useState(false);
-
 const [session, setSession] = useState<any>(null);
-const [verified, setVerified] = useState(false);
 
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
 
-/* -------- AUTH (FIXED) -------- */
+const verified = !!session;
+
+/* ---------------- AUTH (FIXED) ---------------- */
 
 useEffect(() => {
-// 1. Hard refresh session on page load (magic-link return)
-supabase.auth.getSession().then(({ data }) => {
-setSession(data.session);
-setVerified(!!data.session);
-});
+let mounted = true;
 
-// 2. Listen for auth changes (this is what was missing)
-const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-setSession(session);
-setVerified(!!session);
-});
-
-// 3. Load content once
+(async () => {
+// This is the missing piece — handles magic-link return correctly
+const { data } = await supabase.auth.getSession();
+if (mounted) setSession(data.session);
 loadVines();
+})();
+
+const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+setSession(newSession);
+});
 
 return () => {
+mounted = false;
 sub?.subscription.unsubscribe();
 };
 }, []);
 
-/* -------- DATA -------- */
+/* ---------------- DATA ---------------- */
 
 async function loadVines() {
 const { data } = await supabase
@@ -131,28 +129,18 @@ const { data } = await supabase
 if (data) setVines(data);
 }
 
-/* -------- JOIN -------- */
-
 async function handleJoin() {
-if (!email) return;
-
-setJoining(true);
+setSent(false);
 
 const { error } = await supabase.auth.signInWithOtp({
 email,
 options: {
-emailRedirectTo: 'https://polidish.com',
+emailRedirectTo: 'https://www.polidish.com',
 },
 });
 
-if (!error) {
-setSent(true);
+if (!error) setSent(true);
 }
-
-setJoining(false);
-}
-
-/* -------- POST -------- */
 
 async function postVine() {
 if (!verified || !draft.trim()) return;
@@ -160,7 +148,7 @@ if (!verified || !draft.trim()) return;
 setPosting(true);
 
 const display =
-session?.user?.email?.slice(0, 5).toLowerCase() + '••';
+session.user.email?.slice(0, 5).toLowerCase() + '••';
 
 await supabase.from('vines').insert({
 content: draft.trim(),
@@ -176,14 +164,7 @@ loadVines();
 /* ---------------- RENDER ---------------- */
 
 return (
-<main
-style={{
-fontFamily: 'serif',
-minHeight: '100vh',
-display: 'flex',
-flexDirection: 'column',
-}}
->
+<main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 {/* HEADER */}
 <header
 style={{
@@ -231,9 +212,7 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <section className="jungle">
 <h2>
 <strong>Politely dishing politics.</strong>{' '}
-<em>
-<strong>May the best mind win.</strong>
-</em>
+<em><strong>May the best mind win.</strong></em>
 </h2>
 
 {/* SIGN UP */}
@@ -253,7 +232,7 @@ border: '2px solid gold',
 fontWeight: 700,
 }}
 >
-{joining ? 'SENDING…' : 'JOIN'}
+Join
 </button>
 </div>
 
@@ -264,19 +243,13 @@ fontWeight: 700,
 {verified ? (
 <>
 <strong>
-You are a verified author. Only when you choose to post will
-you be displayed publicly as…
+You are a verified author. Only when you choose to post will you appear publicly as…
 </strong>
 <div>
-Published vines cannot be edited. You may delete your authored
-vine at any time.
+Published vines cannot be edited. You may delete your authored vine at any time.
 </div>
-<div>
-<em>deleted</em> means deleted.
-</div>
-<div>
-<strong>Add your vine below.</strong>
-</div>
+<div><em>deleted</em> means deleted.</div>
+<div><strong>Add your vine below.</strong></div>
 </>
 ) : (
 <strong>Sign in required to post.</strong>
@@ -293,23 +266,14 @@ onChange={(e) => setDraft(e.target.value)}
 rows={3}
 style={{ width: '100%', marginBottom: 12 }}
 />
-<button
-onClick={postVine}
-disabled={posting}
-style={{
-background: 'black',
-color: 'gold',
-border: '2px solid gold',
-fontWeight: 700,
-}}
->
-POST
+<button onClick={postVine} disabled={posting}>
+Post
 </button>
 </>
 )}
 
 <div className="jungle-marker">
-<em>The jungle keeps growing and growing.</em>
+<em>The Jungle keeps growing and growing.</em>
 </div>
 
 {vines.map((v) => (
@@ -321,8 +285,7 @@ POST
 </div>
 
 <p className="age">
-18+ only. By visiting or joining Polidish, you affirm that you are at
-least 18 years of age.
+18+ only. By visiting or joining Polidish, you affirm that you are at least 18 years of age.
 </p>
 </section>
 </section>
@@ -330,9 +293,9 @@ least 18 years of age.
 {/* FOOTER */}
 <footer className="footer">
 <div>
-Polidish LLC is not legally responsible for your poor judgment. If you
-endanger children, threaten terrorism, or break the law, you reveal
-yourself. Two-Factor Authentication. It’s a troll-free freedom fest.
+Polidish LLC is not legally responsible for your poor judgment.
+If you endanger children, threaten terrorism, or break the law, you reveal yourself.
+Two-Factor Authentication. It’s a troll-free freedom fest.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
@@ -361,7 +324,7 @@ background: gold;
 color: black;
 padding: 8px 12px;
 text-decoration: none;
-font-weight: 800;
+font-weight: 700;
 }
 .jungle {
 border: 3px solid black;
@@ -401,10 +364,6 @@ margin-bottom: 16px;
 .author {
 font-weight: 700;
 }
-.age {
-font-size: 12px;
-margin-top: 12px;
-}
 .footer {
 padding: 16px 24px;
 font-size: 12px;
@@ -415,7 +374,7 @@ border-top: 2px solid black;
 grid-template-columns: 1fr;
 }
 .scroll {
-min-height: 240vh;
+min-height: 300vh;
 }
 }
 `}</style>
