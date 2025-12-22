@@ -66,8 +66,9 @@ fontWeight: 700,
 fontStyle: 'italic',
 fontSize: 14,
 }}
-dangerouslySetInnerHTML={{ __html: ADS[index].caption }}
-/>
+>
+{ADS[index].caption}
+</div>
 </div>
 </div>
 );
@@ -87,45 +88,39 @@ author_display: string;
 export default function Page() {
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
+const [joining, setJoining] = useState(false);
 
 const [session, setSession] = useState<any>(null);
-const [authReady, setAuthReady] = useState(false);
+const [verified, setVerified] = useState(false);
 
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
 
-const verified = !!session;
-
-/* ---------------- AUTH (FIXED) ---------------- */
+/* -------- AUTH (FIXED) -------- */
 
 useEffect(() => {
-let mounted = true;
-
-const finalizeSession = async () => {
-// 🔑 Critical fix: forces magic-link session to hydrate
-const { data } = await supabase.auth.getSession();
-if (mounted) {
+// 1. Hard refresh session on page load (magic-link return)
+supabase.auth.getSession().then(({ data }) => {
 setSession(data.session);
-setAuthReady(true);
-}
-};
-
-finalizeSession();
-loadVines();
-
-const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
-setSession(newSession);
-setAuthReady(true);
+setVerified(!!data.session);
 });
 
+// 2. Listen for auth changes (this is what was missing)
+const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+setSession(session);
+setVerified(!!session);
+});
+
+// 3. Load content once
+loadVines();
+
 return () => {
-mounted = false;
 sub?.subscription.unsubscribe();
 };
 }, []);
 
-/* ---------------- DATA ---------------- */
+/* -------- DATA -------- */
 
 async function loadVines() {
 const { data } = await supabase
@@ -136,16 +131,28 @@ const { data } = await supabase
 if (data) setVines(data);
 }
 
+/* -------- JOIN -------- */
+
 async function handleJoin() {
-setSent(false);
+if (!email) return;
+
+setJoining(true);
 
 const { error } = await supabase.auth.signInWithOtp({
 email,
-options: { emailRedirectTo: 'https://polidish.com' },
+options: {
+emailRedirectTo: 'https://polidish.com',
+},
 });
 
-if (!error) setSent(true);
+if (!error) {
+setSent(true);
 }
+
+setJoining(false);
+}
+
+/* -------- POST -------- */
 
 async function postVine() {
 if (!verified || !draft.trim()) return;
@@ -153,7 +160,7 @@ if (!verified || !draft.trim()) return;
 setPosting(true);
 
 const display =
-session.user.email?.slice(0, 5).toLowerCase() + '••';
+session?.user?.email?.slice(0, 5).toLowerCase() + '••';
 
 await supabase.from('vines').insert({
 content: draft.trim(),
@@ -169,7 +176,14 @@ loadVines();
 /* ---------------- RENDER ---------------- */
 
 return (
-<main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+<main
+style={{
+fontFamily: 'serif',
+minHeight: '100vh',
+display: 'flex',
+flexDirection: 'column',
+}}
+>
 {/* HEADER */}
 <header
 style={{
@@ -209,15 +223,17 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <AdFrame startIndex={2} />
 
 <div className="outpost-links">
-<a href="/blog">BLOG</a>
-<a href="/store">STORE</a>
+<a href="https://polidish.blog">POLIDISH.BLOG</a>
+<a href="https://polidish.store">POLIDISH.STORE</a>
 </div>
 </aside>
 
 <section className="jungle">
 <h2>
 <strong>Politely dishing politics.</strong>{' '}
-<em><strong>May the best mind win.</strong></em>
+<em>
+<strong>May the best mind win.</strong>
+</em>
 </h2>
 
 {/* SIGN UP */}
@@ -228,30 +244,44 @@ placeholder="Please enter email for member sign-up"
 value={email}
 onChange={(e) => setEmail(e.target.value)}
 />
-<button onClick={handleJoin}>Join</button>
+<button
+onClick={handleJoin}
+style={{
+background: sent ? 'gold' : 'black',
+color: sent ? 'black' : 'white',
+border: '2px solid gold',
+fontWeight: 700,
+}}
+>
+{joining ? 'SENDING…' : 'JOIN'}
+</button>
 </div>
 
 {sent && <div>Magic link sent.</div>}
 
 {/* JUNGLE RULES */}
-{authReady && (
 <div className="jungle-rules">
 {verified ? (
 <>
 <strong>
-You are a verified author. Only when you choose to post will you appear as…
+You are a verified author. Only when you choose to post will
+you be displayed publicly as…
 </strong>
 <div>
-Published vines cannot be edited. You may delete your authored vine at any time.
+Published vines cannot be edited. You may delete your authored
+vine at any time.
 </div>
-<div><em>deleted</em> means deleted.</div>
-<div><strong>Add your vine below.</strong></div>
+<div>
+<em>deleted</em> means deleted.
+</div>
+<div>
+<strong>Add your vine below.</strong>
+</div>
 </>
 ) : (
 <strong>Sign in required to post.</strong>
 )}
 </div>
-)}
 
 {/* JUNGLE THREAD */}
 <div className="scroll">
@@ -263,14 +293,23 @@ onChange={(e) => setDraft(e.target.value)}
 rows={3}
 style={{ width: '100%', marginBottom: 12 }}
 />
-<button onClick={postVine} disabled={posting}>
-Post
+<button
+onClick={postVine}
+disabled={posting}
+style={{
+background: 'black',
+color: 'gold',
+border: '2px solid gold',
+fontWeight: 700,
+}}
+>
+POST
 </button>
 </>
 )}
 
 <div className="jungle-marker">
-<em>The Jungle vines keep growing and growing.</em>
+<em>The jungle keeps growing and growing.</em>
 </div>
 
 {vines.map((v) => (
@@ -282,7 +321,8 @@ Post
 </div>
 
 <p className="age">
-18+ only. By visiting or joining Polidish, you affirm that you are at least 18 years of age, Voting age.
+18+ only. By visiting or joining Polidish, you affirm that you are at
+least 18 years of age.
 </p>
 </section>
 </section>
@@ -290,9 +330,9 @@ Post
 {/* FOOTER */}
 <footer className="footer">
 <div>
-Polidish LLC is not legally responsible for your poor judgment.
-If you endanger children, threaten terrorism, or break the law, you reveal yourself.
-Two-Factor Authentication. It’s a troll-free freedom fest.
+Polidish LLC is not legally responsible for your poor judgment. If you
+endanger children, threaten terrorism, or break the law, you reveal
+yourself. Two-Factor Authentication. It’s a troll-free freedom fest.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
@@ -317,11 +357,11 @@ gap: 12px;
 margin-top: 8px;
 }
 .outpost-links a {
-background: black;
-color: gold;
+background: gold;
+color: black;
 padding: 8px 12px;
 text-decoration: none;
-font-weight: 700;
+font-weight: 800;
 }
 .jungle {
 border: 3px solid black;
@@ -349,7 +389,7 @@ border: 1px solid #ddd;
 padding: 12px;
 flex: 1;
 overflow-y: auto;
-min-height: 160vh;
+min-height: 120vh;
 }
 .jungle-marker {
 text-align: center;
@@ -375,7 +415,7 @@ border-top: 2px solid black;
 grid-template-columns: 1fr;
 }
 .scroll {
-min-height: 300vh;
+min-height: 240vh;
 }
 }
 `}</style>
