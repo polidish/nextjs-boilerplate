@@ -107,15 +107,8 @@ setSession(data.session);
 loadVines();
 })();
 
-const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
-// 🔒 CRITICAL GUARD — prevents phone from downgrading desktop
-if (s) {
+const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
 setSession(s);
-return;
-}
-if (event === 'SIGNED_OUT') {
-setSession(null);
-}
 });
 
 return () => {
@@ -144,7 +137,9 @@ email,
 options: { emailRedirectTo: 'https://polidish.com' },
 });
 
-if (!error) setSent(true);
+if (!error) {
+setSent(true);
+}
 
 setSending(false);
 }
@@ -157,12 +152,11 @@ setPosting(true);
 const display =
 session.user.email?.slice(0, 5).toLowerCase() + '••';
 
-const { error } = await supabase.from('vines').insert({
+await supabase.from('vines').insert({
 content: draft.trim(),
 author_display: display,
+author_id: session.user.id,
 });
-
-if (error) console.error(error);
 
 setDraft('');
 setPosting(false);
@@ -173,6 +167,7 @@ loadVines();
 
 return (
 <main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+{/* HEADER */}
 <header
 style={{
 background: 'black',
@@ -203,6 +198,7 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
+{/* BODY */}
 <section className="grid">
 <aside className="ads">
 <AdFrame startIndex={0} />
@@ -221,6 +217,7 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <em><strong>May the best mind win.</strong></em>
 </h2>
 
+{/* SIGN UP */}
 <div className="signup">
 <input
 type="email"
@@ -235,6 +232,7 @@ onChange={(e) => setEmail(e.target.value)}
 
 {sent && <div>Magic link sent.</div>}
 
+{/* STATUS */}
 <div className="jungle-rules">
 {verified ? (
 <>
@@ -248,6 +246,7 @@ You are a verified author. Only when you choose to post will you appear publicly
 )}
 </div>
 
+{/* JUNGLE THREAD */}
 <div className="scroll">
 {verified && (
 <>
@@ -277,6 +276,7 @@ Post
 </section>
 </section>
 
+{/* FOOTER */}
 <footer className="footer">
 <div>
 Polidish LLC is not legally responsible for your poor judgment.
@@ -286,6 +286,7 @@ Two-Factor Authentication.
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
 
+{/* STYLES */}
 <style jsx>{`
 .grid {
 display: grid;
