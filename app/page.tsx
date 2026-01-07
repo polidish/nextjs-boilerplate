@@ -166,6 +166,7 @@ loadVines();
 /* ---------------- RENDER ---------------- */
 
 return (
+<main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
 
 {/* HEADER */}
 <header
@@ -242,7 +243,9 @@ You are a verified author. Only when you choose to post will you appear publicly
 <div>Add your vine below.</div>
 </>
 ) : (
-<strong>You're invited to join the discussion. Please type your email address and select join above, then click the Magic-link inside your email.</strong>
+<strong>
+You're invited to join the discussion. Please type your email address and select join above, then click the Magic-link inside your email.
+</strong>
 )}
 </div>
 
