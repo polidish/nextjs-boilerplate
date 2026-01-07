@@ -89,52 +89,62 @@ export default function Page() {
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
 const [sending, setSending] = useState(false);
-
 const [session, setSession] = useState<any>(null);
-
-// ✅ NEW: auth hydration guard (prevents phone verify from downgrading desktop)
-const [authReady, setAuthReady] = useState(false);
 
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
 
-// ✅ CHANGED: only treat as verified after auth has hydrated
-const verified = authReady && !!session;
+const verified = !!session;
 
 /* ---------------- AUTH ---------------- */
 
 useEffect(() => {
 let mounted = true;
 
-(async () => {
-// ✅ NEW: treat auth as "not ready" until we've hydrated session
-setAuthReady(false);
+async function initAuth() {
+try {
+// ✅ KEY FIX #1: If the magic-link redirect includes ?code=..., exchange it for a session (mobile needs this).
+if (typeof window !== 'undefined') {
+const url = new URL(window.location.href);
+const code = url.searchParams.get('code');
 
-// Refresh first (helps after magic-link redirect), then read session.
-await supabase.auth.refreshSession();
+if (code) {
+const { error } = await supabase.auth.exchangeCodeForSession(code);
+if (error) console.error('exchangeCodeForSession error:', error);
 
+// Clean the URL (remove ?code=...) so refreshes don’t re-process it.
+url.searchParams.delete('code');
+window.history.replaceState({}, document.title, url.toString());
+}
+}
+
+// Then hydrate session normally.
 const { data } = await supabase.auth.getSession();
-
 if (!mounted) return;
 
 setSession(data.session);
-setAuthReady(true);
 loadVines();
-})();
+} catch (e) {
+console.error('initAuth error:', e);
+if (!mounted) return;
+setSession(null);
+loadVines();
+}
+}
+
+initAuth();
 
 const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
-// ✅ NEW: Never clobber a valid session with a transient null session.
+// ✅ KEY FIX #2: Never clobber an existing valid session with a transient null.
 if (s) {
 setSession(s);
-setAuthReady(true);
 return;
 }
 
-// Only clear session on explicit sign-out.
+// Only clear when it is a real sign-out.
 if (event === 'SIGNED_OUT') {
 setSession(null);
-setAuthReady(true);
 }
 });
 
@@ -177,17 +187,19 @@ if (!verified || !draft.trim()) return;
 
 setPosting(true);
 
-const display = session.user.email?.slice(0, 5).toLowerCase() + '••';
+const display =
+session.user.email?.slice(0, 5).toLowerCase() + '••';
 
-// ✅ NOTE: author_id intentionally NOT sent from the client.
-// Database should assign it (trigger/policy).
 const { error } = await supabase.from('vines').insert({
 content: draft.trim(),
 author_display: display,
+author_id: session.user.id,
 });
 
 if (error) {
-console.error(error);
+console.error('postVine error:', error);
+setPosting(false);
+return;
 }
 
 setDraft('');
