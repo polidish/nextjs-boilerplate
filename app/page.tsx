@@ -242,7 +242,7 @@ You are a verified author. Only when you choose to post will you appear publicly
 <div>Add your vine below.</div>
 </>
 ) : (
-<strong>Please verify by email to post.</strong>
+<strong>You're invited to join the discussion. Please type your email address and select join above, then click the Magic-link inside your email.</strong>
 )}
 </div>
 
