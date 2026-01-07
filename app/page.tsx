@@ -89,29 +89,57 @@ export default function Page() {
 const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
 const [sending, setSending] = useState(false);
+
 const [session, setSession] = useState<any>(null);
+
+// ✅ NEW: auth hydration guard (prevents phone verify from downgrading desktop)
+const [authReady, setAuthReady] = useState(false);
 
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
 const [posting, setPosting] = useState(false);
 
-const verified = !!session;
+// ✅ CHANGED: only treat as verified after auth has hydrated
+const verified = authReady && !!session;
 
 /* ---------------- AUTH ---------------- */
 
 useEffect(() => {
+let mounted = true;
+
 (async () => {
+// ✅ NEW: treat auth as "not ready" until we've hydrated session
+setAuthReady(false);
+
+// Refresh first (helps after magic-link redirect), then read session.
 await supabase.auth.refreshSession();
+
 const { data } = await supabase.auth.getSession();
+
+if (!mounted) return;
+
 setSession(data.session);
+setAuthReady(true);
 loadVines();
 })();
 
-const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
+// ✅ NEW: Never clobber a valid session with a transient null session.
+if (s) {
 setSession(s);
+setAuthReady(true);
+return;
+}
+
+// Only clear session on explicit sign-out.
+if (event === 'SIGNED_OUT') {
+setSession(null);
+setAuthReady(true);
+}
 });
 
 return () => {
+mounted = false;
 sub?.subscription.unsubscribe();
 };
 }, []);
@@ -144,16 +172,15 @@ setSent(true);
 setSending(false);
 }
 
-/* --------- ONLY CHANGE IS HERE --------- */
-
 async function postVine() {
 if (!verified || !draft.trim()) return;
 
 setPosting(true);
 
-const display =
-session.user.email?.slice(0, 5).toLowerCase() + '••';
+const display = session.user.email?.slice(0, 5).toLowerCase() + '••';
 
+// ✅ NOTE: author_id intentionally NOT sent from the client.
+// Database should assign it (trigger/policy).
 const { error } = await supabase.from('vines').insert({
 content: draft.trim(),
 author_display: display,
@@ -167,8 +194,6 @@ setDraft('');
 setPosting(false);
 loadVines();
 }
-
-/* -------------------------------------- */
 
 /* ---------------- RENDER ---------------- */
 
@@ -371,4 +396,3 @@ grid-template-columns: 1fr;
 </main>
 );
 }
-
