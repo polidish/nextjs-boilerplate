@@ -90,7 +90,6 @@ const [email, setEmail] = useState('');
 const [sent, setSent] = useState(false);
 const [sending, setSending] = useState(false);
 const [session, setSession] = useState<any>(null);
-const [authChecked, setAuthChecked] = useState(false);
 
 const [draft, setDraft] = useState('');
 const [vines, setVines] = useState<Vine[]>([]);
@@ -101,57 +100,25 @@ const verified = !!session;
 /* ---------------- AUTH ---------------- */
 
 useEffect(() => {
-let mounted = true;
-
-async function initAuth() {
-try {
-// Mobile magic-link fix: exchange ?code=... for a real session
-if (typeof window !== 'undefined') {
-const url = new URL(window.location.href);
-const code = url.searchParams.get('code');
-
-if (code) {
-const { error } = await supabase.auth.exchangeCodeForSession(code);
-if (error) console.error('exchangeCodeForSession error:', error);
-
-// Remove the code from the URL to prevent re-processing on refresh
-url.searchParams.delete('code');
-window.history.replaceState({}, document.title, url.toString());
-}
-}
-
+(async () => {
+await supabase.auth.refreshSession();
 const { data } = await supabase.auth.getSession();
-if (!mounted) return;
-
 setSession(data.session);
-setAuthChecked(true);
 loadVines();
-} catch (e) {
-console.error('initAuth error:', e);
-if (!mounted) return;
-setSession(null);
-setAuthChecked(true);
-loadVines();
-}
-}
-
-initAuth();
+})();
 
 const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
-// Cross-device guard: never clobber a real session with a transient null
+// 🔒 CRITICAL GUARD — prevents phone from downgrading desktop
 if (s) {
 setSession(s);
 return;
 }
-
-// Only clear on explicit sign-out
 if (event === 'SIGNED_OUT') {
 setSession(null);
 }
 });
 
 return () => {
-mounted = false;
 sub?.subscription.unsubscribe();
 };
 }, []);
@@ -187,35 +154,25 @@ if (!verified || !draft.trim()) return;
 
 setPosting(true);
 
-const display = session.user.email?.slice(0, 5).toLowerCase() + '••';
+const display =
+session.user.email?.slice(0, 5).toLowerCase() + '••';
 
-// Critical fix: request the inserted row back (removes silent failures + read-after-write lag)
-const { data, error } = await supabase
-.from('vines')
-.insert({
+const { error } = await supabase.from('vines').insert({
 content: draft.trim(),
 author_display: display,
-author_id: session.user.id,
-})
-.select('id, content, created_at, author_display')
-.single();
+});
 
-if (error) {
-console.error('postVine error:', error);
-setPosting(false);
-return;
-}
+if (error) console.error(error);
 
-setVines((prev) => [...prev, data as Vine]); // keeps ascending order
 setDraft('');
 setPosting(false);
+loadVines();
 }
 
 /* ---------------- RENDER ---------------- */
 
 return (
 <main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-{/* HEADER */}
 <header
 style={{
 background: 'black',
@@ -246,7 +203,6 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
-{/* BODY */}
 <section className="grid">
 <aside className="ads">
 <AdFrame startIndex={0} />
@@ -262,12 +218,9 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <section className="jungle">
 <h2>
 <strong>Politely dishing politics.</strong>{' '}
-<em>
-<strong>May the best mind win.</strong>
-</em>
+<em><strong>May the best mind win.</strong></em>
 </h2>
 
-{/* SIGN UP */}
 <div className="signup">
 <input
 type="email"
@@ -275,12 +228,13 @@ placeholder="Please enter email for member sign-up"
 value={email}
 onChange={(e) => setEmail(e.target.value)}
 />
-<button onClick={handleJoin}>{sending ? 'Sending…' : 'Join'}</button>
+<button onClick={handleJoin}>
+{sending ? 'Sending…' : 'Join'}
+</button>
 </div>
 
 {sent && <div>Magic link sent.</div>}
 
-{/* STATUS */}
 <div className="jungle-rules">
 {verified ? (
 <>
@@ -294,7 +248,6 @@ You are a verified author. Only when you choose to post will you appear publicly
 )}
 </div>
 
-{/* JUNGLE THREAD */}
 <div className="scroll">
 {verified && (
 <>
@@ -324,16 +277,15 @@ Post
 </section>
 </section>
 
-{/* FOOTER */}
 <footer className="footer">
 <div>
-Polidish LLC is not legally responsible for your poor judgment. If you endanger children, threaten terrorism, or
-break the law, you reveal yourself. Two-Factor Authentication.
+Polidish LLC is not legally responsible for your poor judgment.
+If you endanger children, threaten terrorism, or break the law, you reveal yourself.
+Two-Factor Authentication.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
 
-{/* STYLES */}
 <style jsx>{`
 .grid {
 display: grid;
