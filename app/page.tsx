@@ -254,12 +254,13 @@ You are a verified author. Only when you choose to post will you appear publicly
 value={draft}
 onChange={(e) => setDraft(e.target.value)}
 placeholder="Add your vine…"
+rows={18}
 style={{
 width: '100%',
-minHeight: '160vh',
+height: '420px',
 padding: '16px',
 fontSize: '16px',
-lineHeight: '1.5',
+lineHeight: '1.6',
 marginBottom: 12,
 resize: 'vertical',
 boxSizing: 'border-box',
