@@ -166,7 +166,7 @@ loadVines();
 /* ---------------- RENDER ---------------- */
 
 return (
-<main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+
 {/* HEADER */}
 <header
 style={{
