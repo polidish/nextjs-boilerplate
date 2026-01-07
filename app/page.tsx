@@ -144,6 +144,8 @@ setSent(true);
 setSending(false);
 }
 
+/* --------- ONLY CHANGE IS HERE --------- */
+
 async function postVine() {
 if (!verified || !draft.trim()) return;
 
@@ -152,16 +154,21 @@ setPosting(true);
 const display =
 session.user.email?.slice(0, 5).toLowerCase() + '••';
 
-await supabase.from('vines').insert({
+const { error } = await supabase.from('vines').insert({
 content: draft.trim(),
 author_display: display,
-author_id: session.user.id,
 });
+
+if (error) {
+console.error(error);
+}
 
 setDraft('');
 setPosting(false);
 loadVines();
 }
+
+/* -------------------------------------- */
 
 /* ---------------- RENDER ---------------- */
 
@@ -364,3 +371,4 @@ grid-template-columns: 1fr;
 </main>
 );
 }
+
