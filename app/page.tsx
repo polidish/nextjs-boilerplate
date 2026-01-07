@@ -253,8 +253,17 @@ You are a verified author. Only when you choose to post will you appear publicly
 <textarea
 value={draft}
 onChange={(e) => setDraft(e.target.value)}
-rows={3}
-style={{ width: '100%', marginBottom: 12 }}
+placeholder="Add your vine…"
+style={{
+width: '100%',
+minHeight: '160vh',
+padding: '16px',
+fontSize: '16px',
+lineHeight: '1.5',
+marginBottom: 12,
+resize: 'vertical',
+boxSizing: 'border-box',
+}}
 />
 <button onClick={postVine} disabled={posting}>
 Post
