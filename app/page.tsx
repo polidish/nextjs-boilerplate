@@ -294,6 +294,7 @@ Post
 <div>
 Polidish LLC is not legally responsible for your poor judgment.
 If you endanger children, threaten terrorism, or break the law, you reveal yourself.
+<a href="/assurance"> LINK</a>
 Two-Factor Authentication.
 </div>
 <div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
