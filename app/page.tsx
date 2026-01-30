@@ -166,8 +166,15 @@ loadVines();
 /* ---------------- RENDER ---------------- */
 
 return (
-<main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
-
+<main
+style={{
+fontFamily: 'serif',
+minHeight: '100vh',
+display: 'flex',
+flexDirection: 'column',
+background: 'white',
+}}
+>
 {/* HEADER */}
 <header
 style={{
@@ -214,7 +221,8 @@ Polidish: THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 
 <section className="jungle">
 <h2>
-<strong>The Polidish Venue: Politely dishing politics.</strong>{' '}
+<strong>The Polidish Venue: Politely dishing politics.</strong>
+<span className="headline-sep">{' '}</span>
 <em><strong>May the best mind win.</strong></em>
 </h2>
 
@@ -309,16 +317,19 @@ gap: 24px;
 padding: 24px;
 flex: 1;
 }
+
 .ads {
 display: flex;
 flex-direction: column;
 gap: 16px;
 }
+
 .outpost-links {
 display: flex;
 gap: 12px;
 margin-top: 8px;
 }
+
 .outpost-links a {
 background: black;
 color: gold;
@@ -327,6 +338,7 @@ text-decoration: none;
 font-weight: 700;
 border: 2px solid gold;
 }
+
 .jungle {
 border: 3px solid black;
 padding: 24px;
@@ -334,65 +346,64 @@ display: flex;
 flex-direction: column;
 background: white;
 }
+
 .signup {
 display: flex;
 gap: 8px;
 margin: 12px 0;
 }
+
 .signup input {
 flex: 1;
 padding: 8px;
 }
+
 .jungle-rules {
 margin: 12px 0;
 padding: 12px;
 border: 1px solid #bbb;
 }
+
 .scroll {
 border: 1px solid #ddd;
 padding: 12px;
 flex: 1;
 overflow-y: auto;
 }
+
 .jungle-marker {
 text-align: center;
 margin: 16px 0;
 }
+
 .vine {
 margin-bottom: 16px;
 }
+
 .author {
 font-weight: 700;
 }
+
 .footer {
 padding: 16px 24px;
 font-size: 12px;
 border-top: 2px solid black;
 }
-/* =========================
-MOBILE PHONE ONLY
-========================= */
-/* =========================
-MOBILE PHONE ONLY
-========================= */
+
+.headline-sep {
+display: inline;
+}
+
 @media (max-width: 768px) {
+.headline-sep {
+display: block;
+}
 
- /* single-column layout */
- .grid {
- grid-template-columns: 1fr;
- }
-
- /* mobile content order (blog-style hierarchy) */
- .section-jungle {
- order: 10;
- }
-
- .section-ads {
- order: 20;
- }
-
- /* soften jungle headline on phone only */
- .jungle-marker {
- font-size: 0.85em;
- }
+.jungle h2 {
+font-size: 0.9em;
+}
+}
+`}</style>
+</main>
+);
 }
