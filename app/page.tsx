@@ -137,9 +137,7 @@ email,
 options: { emailRedirectTo: 'https://polidish.com' },
 });
 
-if (!error) {
-setSent(true);
-}
+if (!error) setSent(true);
 
 setSending(false);
 }
@@ -166,42 +164,12 @@ loadVines();
 /* ---------------- RENDER ---------------- */
 
 return (
-<main
-style={{
-fontFamily: 'serif',
-minHeight: '100vh',
-display: 'flex',
-flexDirection: 'column',
-background: 'white',
-}}
->
+<main style={{ fontFamily: 'serif', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
+
 {/* HEADER */}
-<header
-style={{
-background: 'black',
-padding: '12px 24px',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'space-between',
-}}
->
-<Image
-src="/_logo polidish.png"
-alt="Polidish"
-width={96}
-height={96}
-style={{ width: 48, height: 48 }}
-priority
-/>
-<div
-style={{
-color: '#d07a3a',
-fontSize: 'clamp(14px, 1.6vw, 20px)',
-letterSpacing: '0.05em',
-textTransform: 'uppercase',
-fontWeight: 700,
-}}
->
+<header style={{ background: 'black', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+<Image src="/_logo polidish.png" alt="Polidish" width={96} height={96} style={{ width: 48, height: 48 }} priority />
+<div style={{ color: '#d07a3a', fontSize: 'clamp(14px, 1.6vw, 20px)', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 700 }}>
 Polidish: THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
@@ -221,65 +189,33 @@ Polidish: THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 
 <section className="jungle">
 <h2>
-<strong>The Polidish Venue: Politely dishing politics.</strong>
-<span className="headline-sep">{' '}</span>
+<strong>The Polidish Venue: Politely dishing politics.</strong>{' '}
 <em><strong>May the best mind win.</strong></em>
 </h2>
 
-{/* SIGN UP */}
 <div className="signup">
-<input
-type="email"
-placeholder="Please enter email for member sign-up"
-value={email}
-onChange={(e) => setEmail(e.target.value)}
-/>
-<button onClick={handleJoin}>
-{sending ? 'Sending…' : 'Join'}
-</button>
+<input type="email" placeholder="Please enter email for member sign-up" value={email} onChange={(e) => setEmail(e.target.value)} />
+<button onClick={handleJoin}>{sending ? 'Sending…' : 'Join'}</button>
 </div>
 
 {sent && <div>Magic link sent.</div>}
 
-{/* STATUS */}
 <div className="jungle-rules">
 {verified ? (
 <>
-<strong>
-You are a verified author. Only when you choose to post will you appear publicly.
-</strong>
+<strong>You are a verified author. Only when you choose to post will you appear publicly.</strong>
 <div>Add your vine below.</div>
 </>
 ) : (
-<strong>
-You're invited to join the discussion. Please type your email address and select join above, then click the Magic-link inside your email.
-</strong>
+<strong>You're invited to join the discussion. Please type your email address and select join above, then click the Magic-link inside your email.</strong>
 )}
 </div>
 
-{/* JUNGLE THREAD */}
 <div className="scroll">
 {verified && (
 <>
-<textarea
-value={draft}
-onChange={(e) => setDraft(e.target.value)}
-placeholder="Add your vine…"
-rows={18}
-style={{
-width: '100%',
-height: '420px',
-padding: '16px',
-fontSize: '16px',
-lineHeight: '1.6',
-marginBottom: 12,
-resize: 'vertical',
-boxSizing: 'border-box',
-}}
-/>
-<button onClick={postVine} disabled={posting}>
-Post
-</button>
+<textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Add your vine…" rows={18} style={{ width: '100%', height: '420px', padding: '16px', fontSize: '16px', lineHeight: '1.6', marginBottom: 12, resize: 'vertical', boxSizing: 'border-box' }} />
+<button onClick={postVine} disabled={posting}>Post</button>
 </>
 )}
 
@@ -390,17 +326,11 @@ font-size: 12px;
 border-top: 2px solid black;
 }
 
-.headline-sep {
-display: inline;
-}
-
+/* ===== ONLY CHANGE: MOBILE STACK + JUNGLE ON TOP ===== */
 @media (max-width: 768px) {
-.headline-sep {
-display: block;
-}
-
-.jungle h2 {
-font-size: 0.9em;
+.grid {
+display: flex;
+flex-direction: column-reverse;
 }
 }
 `}</style>
