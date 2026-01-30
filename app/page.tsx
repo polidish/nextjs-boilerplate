@@ -195,7 +195,7 @@ textTransform: 'uppercase',
 fontWeight: 700,
 }}
 >
-THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
+Polidish: THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
@@ -214,7 +214,7 @@ THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 
 <section className="jungle">
 <h2>
-<strong>Politely dishing politics.</strong>{' '}
+<strong>The Polidish Venue: Politely dishing politics.</strong>{' '}
 <em><strong>May the best mind win.</strong></em>
 </h2>
 
@@ -293,7 +293,7 @@ Post
 <footer className="footer">
 <div>
 Polidish LLC is not legally responsible for your poor judgment.
-If you endanger children, threaten terrorism, or break the law, you reveal yourself.
+If you endanger children, threaten terrorism or break the law, you reveal yourself.
 <a href="/assurance"> LINK</a>
 Two-Factor Authentication.
 </div>
