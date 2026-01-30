@@ -369,12 +369,27 @@ padding: 16px 24px;
 font-size: 12px;
 border-top: 2px solid black;
 }
+/* =========================
+MOBILE PHONE ONLY
+========================= */
 @media (max-width: 768px) {
+
+/* single-column layout */
 .grid {
 grid-template-columns: 1fr;
 }
+
+/* mobile content order (blog-style hierarchy) */
+.section-jungle {
+order: 10;
 }
-`}</style>
-</main>
-);
+
+.section-ads {
+order: 20;
+}
+
+/* soften jungle headline on phone only */
+.jungle-marker {
+font-size: 0.85em;
+}
 }
