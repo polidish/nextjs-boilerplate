@@ -372,24 +372,27 @@ border-top: 2px solid black;
 /* =========================
 MOBILE PHONE ONLY
 ========================= */
+/* =========================
+MOBILE PHONE ONLY
+========================= */
 @media (max-width: 768px) {
 
-/* single-column layout */
-.grid {
-grid-template-columns: 1fr;
-}
+ /* single-column layout */
+ .grid {
+ grid-template-columns: 1fr;
+ }
 
-/* mobile content order (blog-style hierarchy) */
-.section-jungle {
-order: 10;
-}
+ /* mobile content order (blog-style hierarchy) */
+ .section-jungle {
+ order: 10;
+ }
 
-.section-ads {
-order: 20;
-}
+ .section-ads {
+ order: 20;
+ }
 
-/* soften jungle headline on phone only */
-.jungle-marker {
-font-size: 0.85em;
-}
+ /* soften jungle headline on phone only */
+ .jungle-marker {
+ font-size: 0.85em;
+ }
 }
