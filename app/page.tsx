@@ -181,10 +181,7 @@ Polidish: THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <AdFrame startIndex={1} />
 <AdFrame startIndex={2} />
 
-<div className="outpost-links">
-<a href="https://polidish.blog">POLIDISH.BLOG</a>
-<a href="https://polidish.store">POLIDISH.STORE</a>
-</div>
+
 </aside>
 
 <section className="jungle">
@@ -260,20 +257,7 @@ flex-direction: column;
 gap: 16px;
 }
 
-.outpost-links {
-display: flex;
-gap: 12px;
-margin-top: 8px;
-}
 
-.outpost-links a {
-background: black;
-color: gold;
-padding: 8px 12px;
-text-decoration: none;
-font-weight: 700;
-border: 2px solid gold;
-}
 
 .jungle {
 border: 3px solid black;
