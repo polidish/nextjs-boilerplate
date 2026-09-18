@@ -20,7 +20,7 @@ duration: 30000,
 {
 src: '/peacock.jpeg',
 caption:
-'Polidish: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
+'Polidish®: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
 duration: 60000,
 },
 ];
@@ -170,7 +170,7 @@ return (
 <header style={{ background: 'black', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 <Image src="/_logo polidish.png" alt="Polidish" width={96} height={96} style={{ width: 48, height: 48 }} priority />
 <div style={{ color: '#d07a3a', fontSize: 'clamp(14px, 1.6vw, 20px)', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 700 }}>
-Polidish: THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
+Polidish®: THE VENUE FOR POLITICAL DISCOURSE. 18+
 </div>
 </header>
 
@@ -186,7 +186,7 @@ Polidish: THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 
 <section className="jungle">
 <h2>
-<strong>The Polidish Venue: Politely dishing politics.</strong>{' '}
+<strong>The Polidish® Venue: Politely dishing politics.</strong>{' '}
 <em><strong>May the best mind win.</strong></em>
 </h2>
 
@@ -204,7 +204,7 @@ Polidish: THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 <div>Add your vine below.</div>
 </>
 ) : (
-<strong>You're invited to join the discussion. Please type your email address and select join above, then click the Magic-link inside your email.</strong>
+<strong>You're invited to join the discussion. Please type your email address and select join above, then click the Magic-link inside your email (inbox or junk/spam).</strong>
 )}
 </div>
 
@@ -233,12 +233,12 @@ Polidish: THE VENUE FOR UNCENSORED POLITICAL DISCOURSE. 18+
 {/* FOOTER */}
 <footer className="footer">
 <div>
-Polidish LLC is not legally responsible for your poor judgment.
+Polidish® LLC is not legally responsible for your poor judgment.
 If you endanger children, threaten terrorism or break the law, you reveal yourself.
 <a href="/assurance"> LINK</a>
 Two-Factor Authentication.
 </div>
-<div>© 2025 Polidish LLC. All rights reserved. — 127 Minds Day One</div>
+<div>© 2025 Polidish® LLC. All rights reserved. — 127 Minds Day One</div>
 </footer>
 
 {/* STYLES */}
