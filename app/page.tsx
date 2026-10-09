@@ -220,12 +220,7 @@ Polidish®: THE VENUE FOR POLITICAL DISCOURSE. 18+
 <em>The Jungle keeps growing and growing.</em>
 </div>
 
-{vines.map((v) => (
-<div key={v.id} className="vine">
-<div className="author">{v.author_display}</div>
-<div className="content">{v.content ?? 'deleted'}</div>
-</div>
-))}
+
 </div>
 </section>
 </section>
