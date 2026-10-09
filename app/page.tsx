@@ -122,7 +122,7 @@ async function loadVines() {
 const { data } = await supabase
 .from('vines')
 .select('id, content, created_at, author_display')
-.order('created_at', { ascending: true });
+.order('created_at', { ascending: false });
 
 if (data) setVines(data);
 }
