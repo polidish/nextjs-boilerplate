@@ -219,7 +219,28 @@ Polidish®: THE VENUE FOR POLITICAL DISCOURSE. 18+
 <div className="jungle-marker">
 <em>The Jungle keeps growing and growing.</em>
 </div>
-
+{vines.map((v) => (
+  <div key={v.id} className="vine">
+    <div className="author">{v.author_display}</div>
+    <div
+      className="vine-date"
+      style={{
+        fontSize: '12px',
+        color: '#777',
+        marginTop: '3px',
+        marginBottom: '8px',
+      }}
+    >
+      {new Date(v.created_at).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        timeZone: 'America/Chicago',
+      })}
+    </div>
+    <div className="content">{v.content ?? 'deleted'}</div>
+  </div>
+))}
 
 </div>
 </section>
