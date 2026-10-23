@@ -2,8 +2,13 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata = {
-title: "Polidish",
-description: "Freedom is deliberate.",
+  metadataBase: new URL("https://www.polidish.com"),
+  title: "Polidish® | Political Discussion & Discourse",
+  description:
+    "Polidish® is a free, text-only venue for political discourse. Politely dishing politics. May the best mind win.",
+  alternates: {
+    canonical: "https://www.polidish.com/",
+  },
 };
 
 export default function RootLayout({
