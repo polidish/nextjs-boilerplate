@@ -20,7 +20,7 @@ duration: 30000,
 {
 src: '/peacock.jpeg',
 caption:
-'Polidish®: the Outpost where luxury partners meet High Worth While Individuals (HWWI).',
+'Polidish®: the Outpost where thoughtful partners meet High Worth While Individuals (HWWI).',
 duration: 60000,
 },
 ];
@@ -204,7 +204,7 @@ Polidish®: THE VENUE FOR POLITICAL DISCOURSE. 18+
 <div>Add your vine below.</div>
 </>
 ) : (
-<strong>You're invited to read political discussions without joining. To post for free, please type your email address and select join above, then click the Magic-link inside your email (inbox or junk/spam).</strong>
+<strong>Read political discussions for free in the Polidish® Salon. No sign-in required to read. To share your views, please type your email address and select join above, then click the Magic-link inside your email (inbox or junk/spam).</strong>
 )}
 </div>
 
