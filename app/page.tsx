@@ -200,11 +200,11 @@ Polidish®: THE VENUE FOR POLITICAL DISCOURSE. 18+
 <div className="jungle-rules">
 {verified ? (
 <>
-<strong>You are a verified author. Only when you choose to post will you appear publicly.</strong>
+<strong>You are a verified author. Only when you choose to post will only the first five characters of your email appear publicly.</strong>
 <div>Add your vine below.</div>
 </>
 ) : (
-<strong>You're invited to join the discussion. Please type your email address and select join above, then click the Magic-link inside your email (inbox or junk/spam).</strong>
+<strong>You're invited to read poliditcal discussions below without an account! To post for free, please type your email address and select join above, then click the Magic-link inside your email (inbox or junk/spam).</strong>
 )}
 </div>
 
