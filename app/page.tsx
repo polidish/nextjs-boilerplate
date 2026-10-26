@@ -204,7 +204,7 @@ Polidish®: THE VENUE FOR POLITICAL DISCOURSE. 18+
 <div>Add your vine below.</div>
 </>
 ) : (
-<strong>You're invited to read poliditcal discussions below without an account! To post for free, please type your email address and select join above, then click the Magic-link inside your email (inbox or junk/spam).</strong>
+<strong>You're invited to read political discussions without joining. To post for free, please type your email address and select join above, then click the Magic-link inside your email (inbox or junk/spam).</strong>
 )}
 </div>
 
