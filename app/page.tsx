@@ -170,7 +170,7 @@ return (
 <header style={{ background: 'black', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 <Image src="/_logo polidish.png" alt="Polidish" width={96} height={96} style={{ width: 48, height: 48 }} priority />
 <div style={{ color: '#d07a3a', fontSize: 'clamp(14px, 1.6vw, 20px)', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 700 }}>
-Polidish®: THE VENUE FOR POLITICAL DISCOURSE. 18+
+Polidish®: THE VENUE FOR POLITICAL DISCUSSION & DISCOURSE. 
 </div>
 </header>
 
@@ -200,11 +200,11 @@ Polidish®: THE VENUE FOR POLITICAL DISCOURSE. 18+
 <div className="jungle-rules">
 {verified ? (
 <>
-<strong>You are a verified author. Only when you choose to post will only the first five characters of your email appear publicly.</strong>
+<strong>You are a verified author. Only when you choose to post will the first five characters of your email appear publicly.</strong>
 <div>Add your vine below.</div>
 </>
 ) : (
-<strong>Read political discussions for free in the Polidish® Salon. No sign-in required to read. To share your views, please type your email address and select join above, then click the Magic-link inside your email (inbox or junk/spam).</strong>
+<strong>Read political discussions and debates for free in the Polidish® Salon. No sign-in required to read. To share your views, please type your email address and select join above, then click the Magic-link inside your email (inbox or junk/spam).</strong>
 )}
 </div>
 
@@ -254,7 +254,7 @@ If you endanger children, threaten terrorism or break the law, you reveal yourse
 <a href="/assurance"> LINK</a>
 Two-Factor Authentication.
 </div>
-<div>© 2025 Polidish® LLC. All rights reserved. — 127 Minds Day One</div>
+<div>© 2025 Polidish® LLC. All rights reserved.</div>
 </footer>
 
 {/* STYLES */}
